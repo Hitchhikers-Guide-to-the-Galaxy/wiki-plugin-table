@@ -4,7 +4,7 @@
     {
       "type": "markdown",
       "id": "48167500a2ce35f9",
-      "text": "This page is a [[Stub]] generated through a dialogue between [[David Bovill]] and [[Claude Code]].\n\nThe **Table Plugin** puts a real table on a wiki page. Type CSV, TSV, a markdown pipe table or JSON into the item and it renders as a compact grid when it is narrow, or as stacked row cards when it is wide, so six columns still read in the panel. The ⤢ button opens the whole table as a sortable grid over the page. Double-click the item to edit its text."
+      "text": "The **Table Plugin** puts a real table on a wiki page. Type CSV, TSV, a markdown pipe table or JSON into the item and it renders as a compact grid when it is narrow, or as stacked row cards when it is wide, so six columns still read in the panel. The ⤢ button opens the whole table as a sortable grid over the page. Double-click the item to edit its text."
     },
     {
       "type": "table",
@@ -69,7 +69,7 @@
     {
       "type": "markdown",
       "id": "0d404fb4f05be308",
-      "text": "# See\n\n- [[About Table API Keys]]\n- [[About JSON Plugin]]\n- [[About Data Plugin]]\n- [[Farm Plugin]]\n- [[Table API]]\n- [[Stub]]"
+      "text": "# See\n\n- [[About Table API Keys]]\n- [[About JSON Plugin]]\n- [[About Data Plugin]]\n- [[Farm Plugin]]\n- [[Table API]]"
     }
   ],
   "journal": [
@@ -81,7 +81,7 @@
           {
             "type": "markdown",
             "id": "48167500a2ce35f9",
-            "text": "This page is a [[Stub]] generated through a dialogue between [[David Bovill]] and [[Claude Code]].\n\nThe **Table Plugin** puts a real table on a wiki page. Type CSV, TSV, a markdown pipe table or JSON into the item and it renders as a compact grid when it is narrow, or as stacked row cards when it is wide, so six columns still read in the panel. The ⤢ button opens the whole table as a sortable grid over the page. Double-click the item to edit its text."
+            "text": "The **Table Plugin** puts a real table on a wiki page. Type CSV, TSV, a markdown pipe table or JSON into the item and it renders as a compact grid when it is narrow, or as stacked row cards when it is wide, so six columns still read in the panel. The ⤢ button opens the whole table as a sortable grid over the page. Double-click the item to edit its text."
           },
           {
             "type": "table",
@@ -146,7 +146,7 @@
           {
             "type": "markdown",
             "id": "0d404fb4f05be308",
-            "text": "# See\n\n- [[About Table API Keys]]\n- [[About JSON Plugin]]\n- [[About Data Plugin]]\n- [[Farm Plugin]]\n- [[Table API]]\n- [[Stub]]"
+            "text": "# See\n\n- [[About Table API Keys]]\n- [[About JSON Plugin]]\n- [[About Data Plugin]]\n- [[Farm Plugin]]\n- [[Table API]]"
           }
         ]
       },

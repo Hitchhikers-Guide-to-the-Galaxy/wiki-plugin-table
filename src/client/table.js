@@ -130,7 +130,7 @@ const emit = ($item, item) => {
 
 // ---------- enlarged overlay ------------------------------------------------
 
-const openOverlay = (item, table) => {
+const openOverlay = ($item, item, table) => {
   $('.table-overlay').remove()
   let sortState = table.directives.sort ? { ...table.directives.sort } : null
   const title = table.directives.caption || item.title || 'Table'
@@ -158,6 +158,18 @@ const openOverlay = (item, table) => {
   $(document).on('keydown.tableOverlay', e => {
     if (e.key === 'Escape') close()
   })
+  // The wiki delegates [[link]] clicks on .main; the overlay sits on body, so
+  // do the same job here: close, then open the page in the lineup after the
+  // table's own page (shift-click keeps the lineup, as everywhere else).
+  $overlay.on('click', 'a.internal', function (e) {
+    e.preventDefault()
+    const $link = $(this)
+    const title = `${$link.data('pageName') ? $link.text() || $link.data('pageName') : $link.text()}`
+    const $page = e.shiftKey ? null : $item.closest('.page')
+    close()
+    if (typeof wiki !== 'undefined' && wiki.doInternalLink) wiki.doInternalLink(title, $page, $link.data('site') || null)
+    return false
+  })
   $overlay.on('click', 'th.sortable', function () {
     const column = table.columns[+this.dataset.col]
     sortState = sortState && sortState.column === column ? { column, desc: !sortState.desc } : { column, desc: false }
@@ -173,7 +185,7 @@ const bind = ($item, item) => {
   })
   $item.find('.table-enlarge').on('click', e => {
     e.stopPropagation()
-    openOverlay(item, tableOf(item))
+    openOverlay($item, item, tableOf(item))
   })
   // column highlight chatter, as the data plugin does
   $item.on('mouseenter', 'th, dt', function () {
