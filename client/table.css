@@ -22,12 +22,12 @@
 
 /* grid: a real table, scrolls sideways inside the item, never widens the page */
 .table-scroll { overflow-x: auto; max-width: 100%; }
-table.table-grid { border-collapse: collapse; width: 100%; font-size: inherit; }
+table.table-grid { border-collapse: collapse; width: max-content; min-width: 100%; font-size: inherit; }
 table.table-grid th, table.table-grid td {
   text-align: left; vertical-align: top; padding: 4px 8px; border-bottom: 1px solid #e3e3e3;
 }
 table.table-grid th { background: #f2f2f2; font-weight: bold; white-space: nowrap; border-bottom: 2px solid #ccc; }
-table.table-grid td { min-width: 4em; }
+table.table-grid td { min-width: 4em; max-width: 16em; }
 table.table-grid tbody tr:hover td { background: #fafafa; }
 table.table-grid th.sortable { cursor: pointer; }
 table.table-grid th.sortable:hover { background: #e8e8e8; }
