@@ -1,0 +1,191 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Table",
+    "version": "0.1.0",
+    "description": "Tables held on wiki pages as `table` items — CSV, TSV, a markdown pipe table or JSON typed into the item, or data pushed through the write door. These operations read the first table item on a page (the json plugin's rule), list a site's tables, hand the data back as CSV, and — gated — replace a table's pushed data. The plugin's own server keeps json-plugin parity at /plugin/table/{slug}: an open GET and an X-Api-Key PUT for headless writers."
+  },
+  "components": {
+    "schemas": {
+      "Table": {
+        "type": "object",
+        "properties": {
+          "site": { "type": "string" },
+          "slug": { "type": "string" },
+          "title": { "type": "string" },
+          "caption": { "type": ["string", "null"] },
+          "layout": { "type": "string", "description": "grid, stack or auto." },
+          "columns": { "type": "array", "items": { "type": "string" } },
+          "rows": { "type": "array", "items": { "type": "array", "items": { "type": "string" } }, "description": "Cells as strings, in column order." },
+          "records": { "type": "array", "items": { "type": "object" }, "description": "The same rows as objects keyed by column, numbers coerced." },
+          "format": { "type": "string", "description": "csv, tsv, gfm, json, resource or empty." },
+          "source": { "type": "string", "description": "text (typed into the item) or resource (pushed through the write door)." },
+          "writes": { "type": "integer" },
+          "written": { "type": ["integer", "null"], "description": "Epoch ms of the last push." },
+          "interval": { "type": ["integer", "null"], "description": "Ms between the last two pushes." },
+          "writer": { "type": ["string", "null"] },
+          "warnings": { "type": "array", "items": { "type": "string" } }
+        }
+      },
+      "TableList": {
+        "type": "object",
+        "properties": {
+          "site": { "type": "string" },
+          "tables": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "slug": { "type": "string" },
+                "title": { "type": "string" },
+                "caption": { "type": ["string", "null"] },
+                "columns": { "type": "integer" },
+                "rows": { "type": "integer" },
+                "source": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "Csv": {
+        "type": "object",
+        "properties": {
+          "site": { "type": "string" },
+          "slug": { "type": "string" },
+          "csv": { "type": "string" }
+        }
+      },
+      "WriteResult": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string" },
+          "site": { "type": "string" },
+          "slug": { "type": "string" },
+          "writes": { "type": "integer" },
+          "interval": { "type": ["integer", "null"] },
+          "rows": { "type": "integer" },
+          "columns": { "type": "integer" }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/read.json": {
+      "get": {
+        "operationId": "read",
+        "summary": "Read a page's table",
+        "description": "The first table item on the page, parsed: columns, rows as strings, the same rows as records, the caption and layout directives, and the push bookkeeping if data was written through a door.",
+        "x-fedwiki-read-only": true,
+        "x-fedwiki-context": ["origin", "farmRoot"],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "query",
+            "required": true,
+            "description": "The page slug.",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "The table.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Table" } } } },
+          "404": { "description": "No such page, or no table item on it." }
+        }
+      }
+    },
+    "/list.json": {
+      "get": {
+        "operationId": "list",
+        "summary": "List this site's tables",
+        "description": "Every page on the site you asked at whose story carries a table item, with its size and where its data came from.",
+        "x-fedwiki-read-only": true,
+        "x-fedwiki-context": ["origin", "farmRoot"],
+        "responses": {
+          "200": { "description": "Tables by slug.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/TableList" } } } }
+        }
+      }
+    },
+    "/csv.json": {
+      "get": {
+        "operationId": "csv",
+        "summary": "A page's table as CSV",
+        "description": "The same first table item, serialised as RFC 4180 CSV inside a JSON envelope. For a bare text/csv response use the plugin's own GET /plugin/table/{slug}.csv.",
+        "x-fedwiki-read-only": true,
+        "x-fedwiki-context": ["origin", "farmRoot"],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "query",
+            "required": true,
+            "description": "The page slug.",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "CSV text.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Csv" } } } },
+          "404": { "description": "No such page, or no table item on it." }
+        }
+      }
+    },
+    "/write.json": {
+      "post": {
+        "operationId": "write",
+        "summary": "Push data into a page's table",
+        "description": "Replace the pushed data (`resource`) of the first table item on the page. The typed text of the item is left alone and keeps supplying the caption and layout; pushed data wins over typed data when both exist. Gated by the farm: sign in as the site's owner, private sites only unless the farm allows public writes. Headless writers with an api key use PUT /plugin/table/{slug} instead.",
+        "x-fedwiki-writes": true,
+        "x-fedwiki-context": ["origin", "farmRoot"],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "query",
+            "required": true,
+            "description": "The page slug.",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "csv",
+            "in": "query",
+            "required": false,
+            "description": "The new table as CSV, TSV or a markdown pipe table, header first.",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "json",
+            "in": "query",
+            "required": false,
+            "description": "The new table as JSON: {columns, rows}, an array of row objects, or an array of arrays with the header first.",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Written.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/WriteResult" } } } },
+          "400": { "description": "Neither csv nor json parsed to a table." },
+          "403": { "description": "The farm's write gate refused." },
+          "404": { "description": "No such page, or no table item on it." }
+        }
+      }
+    },
+    "/plugin/table/{slug}": {
+      "get": {
+        "operationId": "readTablePlugin",
+        "summary": "json-plugin-style GET — the table, or .csv",
+        "description": "Served by the plugin's own server, not the farm, for parity with wiki-plugin-json: GET /plugin/table/{slug} answers the first table item as JSON with CORS open; append .csv to the slug for text/csv.",
+        "x-fedwiki-served-by": "plugin",
+        "responses": {
+          "200": { "description": "The table as JSON, or CSV." },
+          "404": { "description": "No such page, or no table item on it." }
+        }
+      },
+      "put": {
+        "operationId": "writeTablePlugin",
+        "summary": "json-plugin-style PUT — push data with an X-Api-Key",
+        "description": "Served by the plugin's own server. Body is {columns, rows}, an array of rows, {csv: text} or raw text/csv; the X-Api-Key header must match a key in the site's status/plugin/table/tokens.json (see About Table API Keys). This is the door for scripts and agents on other machines that hold no owner cookie.",
+        "x-fedwiki-served-by": "plugin",
+        "responses": {
+          "200": { "description": "{status: ok, writes, interval, length, rows, columns}." },
+          "401": { "description": "Missing or invalid X-Api-Key." },
+          "404": { "description": "No such page, or no table item on it." }
+        }
+      }
+    }
+  }
+}

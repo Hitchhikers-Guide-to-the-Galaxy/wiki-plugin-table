@@ -1,0 +1,2 @@
+Ward Cunningham <ward@c2.com> — author of wiki-plugin-json, from which this plugin was cloned
+David Bovill — wiki-plugin-table

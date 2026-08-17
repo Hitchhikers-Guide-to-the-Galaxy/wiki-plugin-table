@@ -1,0 +1,52 @@
+/* wiki-plugin-table — item styles. Loaded once from emit(). */
+
+.item.table-source .table-item { position: relative; font-size: 13px; line-height: 1.35; }
+.item.table-source .table-head { display: flex; align-items: baseline; justify-content: space-between; min-height: 1.4em; }
+.item.table-source .table-caption { font-weight: bold; margin: 0 0 4px 0; }
+.item.table-source .table-enlarge {
+  margin-left: auto; border: 1px solid #ccc; background: #f6f6f6; color: #666; border-radius: 3px;
+  font-size: 12px; line-height: 1; padding: 2px 5px; cursor: pointer; opacity: 0.55;
+}
+.item.table-source:hover .table-enlarge { opacity: 1; }
+.item.table-source .table-warning { color: #a55; font-size: 12px; margin: 2px 0 6px; }
+.item.table-source .table-empty { color: #888; font-style: italic; }
+.item.table-source p.caption { margin-top: 6px; }
+
+/* grid: a real table, scrolls sideways inside the item, never widens the page */
+.table-scroll { overflow-x: auto; max-width: 100%; }
+table.table-grid { border-collapse: collapse; width: 100%; font-size: inherit; }
+table.table-grid th, table.table-grid td {
+  text-align: left; vertical-align: top; padding: 4px 8px; border-bottom: 1px solid #e3e3e3;
+}
+table.table-grid th { background: #f2f2f2; font-weight: bold; white-space: nowrap; border-bottom: 2px solid #ccc; }
+table.table-grid td { min-width: 4em; }
+table.table-grid tbody tr:hover td { background: #fafafa; }
+table.table-grid th.sortable { cursor: pointer; }
+table.table-grid th.sortable:hover { background: #e8e8e8; }
+
+/* stack: one card per row, first/key column as the heading */
+.table-stack .row-card { border: 1px solid #ddd; border-radius: 4px; padding: 6px 8px; margin: 0 0 6px 0; background: #fbfbfb; }
+.table-stack .row-key { font-weight: bold; margin-bottom: 3px; }
+.table-stack dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; column-gap: 8px; row-gap: 1px; }
+.table-stack dt { color: #666; font-size: 12px; white-space: nowrap; margin: 0; }
+.table-stack dd { margin: 0; }
+
+/* enlarged overlay */
+.table-overlay {
+  position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.45);
+  display: flex; align-items: center; justify-content: center; padding: 3vh 3vw;
+}
+.table-overlay-panel {
+  background: #fff; border-radius: 6px; box-shadow: 0 8px 40px rgba(0,0,0,0.35);
+  max-width: 94vw; max-height: 94vh; min-width: 40vw; display: flex; flex-direction: column; overflow: hidden;
+  font-size: 14px; line-height: 1.4;
+}
+.table-overlay-head { display: flex; align-items: baseline; gap: 12px; padding: 10px 14px; border-bottom: 1px solid #ddd; background: #f6f6f6; }
+.table-overlay-title { font-weight: bold; font-size: 16px; }
+.table-overlay-stats { color: #777; font-size: 12px; margin-left: auto; }
+.table-overlay-close { border: none; background: none; font-size: 22px; line-height: 1; cursor: pointer; color: #666; }
+.table-overlay-body { overflow: auto; padding: 0 14px 14px; }
+.table-overlay-body .table-scroll { overflow: visible; }
+.table-overlay-body table.table-grid { width: auto; min-width: 100%; }
+.table-overlay-body table.table-grid th { position: sticky; top: 0; z-index: 1; }
+.table-overlay-body table.table-grid td { max-width: 32em; }

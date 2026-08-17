@@ -1,0 +1,158 @@
+{
+  "title": "About Table Plugin",
+  "story": [
+    {
+      "type": "markdown",
+      "id": "48167500a2ce35f9",
+      "text": "This page is a [[Stub]] generated through a dialogue between [[David Bovill]] and [[Claude Code]].\n\nThe **Table Plugin** puts a real table on a wiki page. Type CSV, TSV, a markdown pipe table or JSON into the item and it renders as a compact grid when it is narrow, or as stacked row cards when it is wide, so six columns still read in the panel. The ⤢ button opens the whole table as a sortable grid over the page. Double-click the item to edit its text."
+    },
+    {
+      "type": "table",
+      "id": "f5402e22ed4afb21",
+      "text": "CAPTION Boards on the bench\nBoard,RAM,Good for\nPi 4,4 GB,gadget mode and video\nPi 5,8 GB,the farm and Marvin\nPi Zero 2 W,512 MB,sensors"
+    },
+    {
+      "type": "markdown",
+      "id": "fa7e4b62da025aeb",
+      "text": "Wide tables stack. Each row becomes a card headed by the key column, so the table below — the one that prompted this plugin — reads top to bottom instead of squeezing six columns into four hundred pixels."
+    },
+    {
+      "type": "table",
+      "id": "683ab7f339a54b7f",
+      "text": "CAPTION The ranked research strands\n| # | Strand | Time to evidence | Reversible | Needs | Judgement |\n|---|---|---|---|---|---|\n| 1 | [[Agent Score]] — a score read by a human, an agent and OSC | weeks: the tabletop tests it directly | yes | the ensemble | do first; it is what the build needs |\n| 2 | [[Musical Intention]] — minimum representation of an intention | weeks–months | yes | reading + two embassies | second; the rain event is its first test case |\n| 3 | [[Improvisation Score]]s — event, graphic, text scores, conduction | reading only | yes | a library | run alongside 1 as reading |\n| 4 | [[Laban Notation]] — effort/flow/weight as gesture primitives | months, uncertain payoff | yes | a dance-literate reader | last; learn from it, do not adopt it |"
+    },
+    {
+      "type": "markdown",
+      "id": "66df428d966d3200",
+      "text": "JSON works too: an array of row objects, an array of arrays with the header first, or an object with columns and rows."
+    },
+    {
+      "type": "table",
+      "id": "5a3c574da20300ba",
+      "text": "{\n  \"columns\": [\n    \"voice\",\n    \"role\",\n    \"instrument\"\n  ],\n  \"rows\": [\n    [\n      \"Marvin\",\n      \"host\",\n      \"speech\"\n    ],\n    [\n      \"Matt\",\n      \"reader\",\n      \"radio\"\n    ],\n    [\n      \"Laura\",\n      \"scribe\",\n      \"wiki\"\n    ]\n  ]\n}"
+    },
+    {
+      "type": "markdown",
+      "id": "ec3accb6e0d97927",
+      "text": "# Origins\n\nThis plugin is a clone of Ward Cunningham's [[JSON Plugin]] — the item owns its data, the server answers restful reads and api-key writes against the first such item on a page, and changes of configuration are journaled while pushed data is not. What is new is the rendering, the data interface, and the farm declaration that turns the same operations into REST routes and MCP tools."
+    },
+    {
+      "type": "markdown",
+      "id": "84927ba44540cef0",
+      "text": "# DSL\n\nThe item text may begin with directive lines, one per line, uppercase keyword then value. Everything after them is the table.\n\n- **CAPTION** text — a heading over the table and the title of the enlarged view.\n- **LAYOUT** grid | stack | auto — force a grid, force row cards, or let width decide (grid up to three columns). Default auto.\n- **SORT** column [desc] — initial sort.\n- **KEY** column — which column heads each stacked card. Default: the first column that is not all numbers.\n\nCells may hold [[Wiki Links]], external links in the wiki's square-bracket form, *italic* and **bold**. Nothing else is interpreted; HTML is escaped."
+    },
+    {
+      "type": "markdown",
+      "id": "059606d82c39ac7e",
+      "text": "# Data Interface\n\nA rendered table item is a data source for the rest of the lineup.\n\n- It carries the class **table-source** and its DOM node answers **tableData()** with columns and rows — the house convention shared with the calendar-source of the [[Date Plugin]].\n- It also sets **item.data** (rows as objects keyed by column, numbers coerced) and **item.columns**, and carries the class **data**, so Ward's **wiki.getData** family — [[Bars Plugin]], [[Line Plugin]], [[Scatter Plugin]], [[Method Plugin]] — reads it like a [[Data Plugin]] item placed above them.\n- Hovering a header raises the same **thumb** event the data plugin uses for column highlighting."
+    },
+    {
+      "type": "markdown",
+      "id": "7662cc697684616c",
+      "text": "# REST and MCP\n\nThe operations are declared in the package's api/openapi.json and mounted by the [[Farm Plugin]] under /system/api/table/ — the same declaration also becomes tools on the farm's MCP door at /system/api/mcp and a generated [[Table API]] page.\n\n- GET /system/api/table/read.json?slug=… — the first table on a page as columns, rows and records.\n- GET /system/api/table/list.json — every table on the site you asked at.\n- GET /system/api/table/csv.json?slug=… — the same as CSV.\n- POST /system/api/table/write.json?slug=…&csv=… — push data, gated by the farm (owner login, private sites).\n\nFor json-plugin parity the plugin's own server answers GET /plugin/table/slug (append .csv for text/csv) and an api-key PUT for headless writers — see [[About Table API Keys]]."
+    },
+    {
+      "type": "code",
+      "id": "6b12f31bf4db2ef0",
+      "text": "curl http://<site>/plugin/table/<slug>\ncurl http://<site>/plugin/table/<slug>.csv\n\nprintf 'name,score\\namy,2\\nzed,10\\n' | curl -X PUT --data-binary @- \\\n  -H 'Content-Type: text/csv' \\\n  -H 'X-Api-Key: 35ece947aa90b581' \\\n  http://<site>/plugin/table/<slug>"
+    },
+    {
+      "type": "markdown",
+      "id": "00a125ce7edf3e41",
+      "text": "Pushed data replaces what the item text says for columns and rows, but the text keeps supplying the caption and layout. The stats line under the table says how many rows and columns, whether the data was pushed, when, and how long between pushes."
+    },
+    {
+      "type": "markdown",
+      "id": "8ce1cd41ee1eacb2",
+      "text": "# Repositories\n\n- [https://github.com/Hitchhikers-Guide-to-the-Galaxy/wiki-plugin-table wiki-plugin-table on GitHub]\n- [https://www.npmjs.com/package/wiki-plugin-table wiki-plugin-table on npm]\n- [https://github.com/WardCunningham/wiki-plugin-json wiki-plugin-json — the original]"
+    },
+    {
+      "type": "markdown",
+      "id": "0d404fb4f05be308",
+      "text": "# See\n\n- [[About Table API Keys]]\n- [[About JSON Plugin]]\n- [[About Data Plugin]]\n- [[Farm Plugin]]\n- [[Table API]]\n- [[Stub]]"
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "About Table Plugin",
+        "story": [
+          {
+            "type": "markdown",
+            "id": "48167500a2ce35f9",
+            "text": "This page is a [[Stub]] generated through a dialogue between [[David Bovill]] and [[Claude Code]].\n\nThe **Table Plugin** puts a real table on a wiki page. Type CSV, TSV, a markdown pipe table or JSON into the item and it renders as a compact grid when it is narrow, or as stacked row cards when it is wide, so six columns still read in the panel. The ⤢ button opens the whole table as a sortable grid over the page. Double-click the item to edit its text."
+          },
+          {
+            "type": "table",
+            "id": "f5402e22ed4afb21",
+            "text": "CAPTION Boards on the bench\nBoard,RAM,Good for\nPi 4,4 GB,gadget mode and video\nPi 5,8 GB,the farm and Marvin\nPi Zero 2 W,512 MB,sensors"
+          },
+          {
+            "type": "markdown",
+            "id": "fa7e4b62da025aeb",
+            "text": "Wide tables stack. Each row becomes a card headed by the key column, so the table below — the one that prompted this plugin — reads top to bottom instead of squeezing six columns into four hundred pixels."
+          },
+          {
+            "type": "table",
+            "id": "683ab7f339a54b7f",
+            "text": "CAPTION The ranked research strands\n| # | Strand | Time to evidence | Reversible | Needs | Judgement |\n|---|---|---|---|---|---|\n| 1 | [[Agent Score]] — a score read by a human, an agent and OSC | weeks: the tabletop tests it directly | yes | the ensemble | do first; it is what the build needs |\n| 2 | [[Musical Intention]] — minimum representation of an intention | weeks–months | yes | reading + two embassies | second; the rain event is its first test case |\n| 3 | [[Improvisation Score]]s — event, graphic, text scores, conduction | reading only | yes | a library | run alongside 1 as reading |\n| 4 | [[Laban Notation]] — effort/flow/weight as gesture primitives | months, uncertain payoff | yes | a dance-literate reader | last; learn from it, do not adopt it |"
+          },
+          {
+            "type": "markdown",
+            "id": "66df428d966d3200",
+            "text": "JSON works too: an array of row objects, an array of arrays with the header first, or an object with columns and rows."
+          },
+          {
+            "type": "table",
+            "id": "5a3c574da20300ba",
+            "text": "{\n  \"columns\": [\n    \"voice\",\n    \"role\",\n    \"instrument\"\n  ],\n  \"rows\": [\n    [\n      \"Marvin\",\n      \"host\",\n      \"speech\"\n    ],\n    [\n      \"Matt\",\n      \"reader\",\n      \"radio\"\n    ],\n    [\n      \"Laura\",\n      \"scribe\",\n      \"wiki\"\n    ]\n  ]\n}"
+          },
+          {
+            "type": "markdown",
+            "id": "ec3accb6e0d97927",
+            "text": "# Origins\n\nThis plugin is a clone of Ward Cunningham's [[JSON Plugin]] — the item owns its data, the server answers restful reads and api-key writes against the first such item on a page, and changes of configuration are journaled while pushed data is not. What is new is the rendering, the data interface, and the farm declaration that turns the same operations into REST routes and MCP tools."
+          },
+          {
+            "type": "markdown",
+            "id": "84927ba44540cef0",
+            "text": "# DSL\n\nThe item text may begin with directive lines, one per line, uppercase keyword then value. Everything after them is the table.\n\n- **CAPTION** text — a heading over the table and the title of the enlarged view.\n- **LAYOUT** grid | stack | auto — force a grid, force row cards, or let width decide (grid up to three columns). Default auto.\n- **SORT** column [desc] — initial sort.\n- **KEY** column — which column heads each stacked card. Default: the first column that is not all numbers.\n\nCells may hold [[Wiki Links]], external links in the wiki's square-bracket form, *italic* and **bold**. Nothing else is interpreted; HTML is escaped."
+          },
+          {
+            "type": "markdown",
+            "id": "059606d82c39ac7e",
+            "text": "# Data Interface\n\nA rendered table item is a data source for the rest of the lineup.\n\n- It carries the class **table-source** and its DOM node answers **tableData()** with columns and rows — the house convention shared with the calendar-source of the [[Date Plugin]].\n- It also sets **item.data** (rows as objects keyed by column, numbers coerced) and **item.columns**, and carries the class **data**, so Ward's **wiki.getData** family — [[Bars Plugin]], [[Line Plugin]], [[Scatter Plugin]], [[Method Plugin]] — reads it like a [[Data Plugin]] item placed above them.\n- Hovering a header raises the same **thumb** event the data plugin uses for column highlighting."
+          },
+          {
+            "type": "markdown",
+            "id": "7662cc697684616c",
+            "text": "# REST and MCP\n\nThe operations are declared in the package's api/openapi.json and mounted by the [[Farm Plugin]] under /system/api/table/ — the same declaration also becomes tools on the farm's MCP door at /system/api/mcp and a generated [[Table API]] page.\n\n- GET /system/api/table/read.json?slug=… — the first table on a page as columns, rows and records.\n- GET /system/api/table/list.json — every table on the site you asked at.\n- GET /system/api/table/csv.json?slug=… — the same as CSV.\n- POST /system/api/table/write.json?slug=…&csv=… — push data, gated by the farm (owner login, private sites).\n\nFor json-plugin parity the plugin's own server answers GET /plugin/table/slug (append .csv for text/csv) and an api-key PUT for headless writers — see [[About Table API Keys]]."
+          },
+          {
+            "type": "code",
+            "id": "6b12f31bf4db2ef0",
+            "text": "curl http://<site>/plugin/table/<slug>\ncurl http://<site>/plugin/table/<slug>.csv\n\nprintf 'name,score\\namy,2\\nzed,10\\n' | curl -X PUT --data-binary @- \\\n  -H 'Content-Type: text/csv' \\\n  -H 'X-Api-Key: 35ece947aa90b581' \\\n  http://<site>/plugin/table/<slug>"
+          },
+          {
+            "type": "markdown",
+            "id": "00a125ce7edf3e41",
+            "text": "Pushed data replaces what the item text says for columns and rows, but the text keeps supplying the caption and layout. The stats line under the table says how many rows and columns, whether the data was pushed, when, and how long between pushes."
+          },
+          {
+            "type": "markdown",
+            "id": "8ce1cd41ee1eacb2",
+            "text": "# Repositories\n\n- [https://github.com/Hitchhikers-Guide-to-the-Galaxy/wiki-plugin-table wiki-plugin-table on GitHub]\n- [https://www.npmjs.com/package/wiki-plugin-table wiki-plugin-table on npm]\n- [https://github.com/WardCunningham/wiki-plugin-json wiki-plugin-json — the original]"
+          },
+          {
+            "type": "markdown",
+            "id": "0d404fb4f05be308",
+            "text": "# See\n\n- [[About Table API Keys]]\n- [[About JSON Plugin]]\n- [[About Data Plugin]]\n- [[Farm Plugin]]\n- [[Table API]]\n- [[Stub]]"
+          }
+        ]
+      },
+      "date": 1786975136046,
+      "provenance": "Authored by an AI agent — Claude Code via the [[clone-plugin]] skill, in dialogue with [[David Bovill]]. [https://claude.com/claude-code Claude Code]"
+    }
+  ],
+  "plugin": "table"
+}

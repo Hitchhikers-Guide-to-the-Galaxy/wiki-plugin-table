@@ -1,0 +1,55 @@
+{
+  "name": "wiki-plugin-table",
+  "version": "0.1.0",
+  "description": "Federated Wiki - Table Plugin — tables from CSV, TSV, markdown or JSON that read well in the narrow panel, enlarge to a sortable grid, expose their data to other plugins, and answer over REST and MCP. Cloned from wiki-plugin-json.",
+  "type": "module",
+  "main": "client/table.js",
+  "files": [
+    "api",
+    "client",
+    "pages",
+    "server",
+    "src",
+    "factory.json"
+  ],
+  "scripts": {
+    "build": "node scripts/build.js",
+    "test": "node --test test/*.test.js"
+  },
+  "keywords": [
+    "table",
+    "csv",
+    "json",
+    "data",
+    "wiki",
+    "federated wiki",
+    "plugin"
+  ],
+  "author": "David Bovill",
+  "contributors": [
+    {
+      "name": "Ward Cunningham",
+      "email": "ward@c2.com",
+      "url": "http://ward.bay.wiki.org"
+    }
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hitchhikers-Guide-to-the-Galaxy/wiki-plugin-table.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Hitchhikers-Guide-to-the-Galaxy/wiki-plugin-table/issues"
+  },
+  "homepage": "https://github.com/Hitchhikers-Guide-to-the-Galaxy/wiki-plugin-table#readme",
+  "fedwiki": {
+    "api": {
+      "version": 1,
+      "spec": "api/openapi.json",
+      "handlers": "api/handlers.js"
+    }
+  }
+}
