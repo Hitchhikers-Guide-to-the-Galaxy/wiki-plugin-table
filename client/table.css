@@ -1,5 +1,13 @@
 /* wiki-plugin-table — item styles. Loaded once from emit(). */
 
+/* the item carries class "data" so wiki.getData finds it; undo the wiki's
+   float-right data-widget look — a table is body content, not a sidebar */
+.item.table-source.data {
+  float: none; width: auto; margin: 0 0 1em 0; padding: 0; background: transparent; overflow: visible;
+}
+.item.table-source.data p { text-align: left; color: inherit; }
+.item.table-source.data p.caption { text-align: center; color: gray; }
+
 .item.table-source .table-item { position: relative; font-size: 13px; line-height: 1.35; }
 .item.table-source .table-head { display: flex; align-items: baseline; justify-content: space-between; min-height: 1.4em; }
 .item.table-source .table-caption { font-weight: bold; margin: 0 0 4px 0; }

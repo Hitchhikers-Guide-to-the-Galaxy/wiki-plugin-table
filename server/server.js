@@ -25,25 +25,68 @@ const cors = (req, res, next) => {
   next()
 }
 
+// wiki-server parses JSON and form bodies only; CSV arrives as text/csv or
+// text/plain with the stream untouched, so read it here (bounded).
+const textBody = (req, res, next) => {
+  const type = String(req.headers['content-type'] || '')
+  if (!/^text\//i.test(type) || typeof req.body === 'string') return next()
+  let data = ''
+  let size = 0
+  req.setEncoding('utf8')
+  req.on('data', chunk => {
+    size += chunk.length
+    if (size > 5 * 1024 * 1024) {
+      res.status(413).json({ status: 'error', error: 'body over 5 MB' })
+      req.destroy()
+      return
+    }
+    data += chunk
+  })
+  req.on('end', () => {
+    req.body = data
+    next()
+  })
+  req.on('error', next)
+}
+
 const startServer = ({ argv, app }) => {
   const origin = argv && argv.status ? path.basename(path.dirname(argv.status)) : null
   const farmRoot = argv && argv.status ? path.dirname(path.dirname(argv.status)) : null
   if (origin && app && app.pagehandler) bridge.set(origin, app.pagehandler)
 
-  // tokens: {slug|'*': {key: {id, nb}}} — read once, as json did; a caution, not a crash, when absent
-  let tokens = null
+  // tokens: {slug|'*': {key: {id, nb}}} — json read this once, asynchronously,
+  // at start-up; a farm starts a site's server on its first request, so the
+  // very next request could beat the read. Read on demand instead, cached by
+  // mtime, which also means editing the file needs no restart.
   const siteDir = (argv && argv.data) || (argv && argv.status ? path.dirname(argv.status) : '.')
   const tokenFile = path.join(siteDir, 'status', 'plugin', 'table', 'tokens.json')
-  fs.readFile(tokenFile, 'utf8', (err, data) => {
-    if (err) return
+  let tokens = null
+  let tokensMtime = 0
+  const loadTokens = () => {
+    let stat
     try {
-      tokens = JSON.parse(data)
-    } catch (e) {
-      console.log(`caution: ${tokenFile}: ${e.message}`)
+      stat = fs.statSync(tokenFile)
+    } catch {
+      tokens = null
+      return null
     }
-  })
+    if (stat.mtimeMs !== tokensMtime) {
+      try {
+        tokens = JSON.parse(fs.readFileSync(tokenFile, 'utf8'))
+        tokensMtime = stat.mtimeMs
+      } catch (e) {
+        console.log(`caution: ${tokenFile}: ${e.message}`)
+        tokens = null
+      }
+    }
+    return tokens
+  }
 
-  const authFor = (slug, key) => (tokens && key ? (tokens[slug] && tokens[slug][key]) || (tokens['*'] && tokens['*'][key]) : null)
+  const authFor = (slug, key) => {
+    const t = loadTokens()
+    if (!t || !key) return null
+    return (t[slug] && t[slug][key]) || (t['*'] && t['*'][key]) || null
+  }
 
   const readFrom = (slug, res, send) =>
     core
@@ -69,7 +112,7 @@ const startServer = ({ argv, app }) => {
   })
 
   // PUT /plugin/table/:slug  body: {columns, rows} | array | {csv} | text/csv
-  app.put('/plugin/table/:slug', cors, (req, res, next) => {
+  app.put('/plugin/table/:slug', cors, textBody, (req, res, next) => {
     const slug = req.params.slug
     if (!/^[a-z0-9-]+$/.test(slug)) return next()
     const auth = authFor(slug, req.headers['x-api-key'])
