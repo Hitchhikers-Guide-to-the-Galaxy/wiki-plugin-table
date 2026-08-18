@@ -94,7 +94,8 @@ const stackHtml = table => {
       const rest = table.columns
         .map((c, i) => (i === key ? '' : `<dt data-col="${i}">${markup(c)}</dt><dd>${markup(r[i])}</dd>`))
         .join('')
-      return `<div class="row-card" data-folded="${fold === 'closed'}">${head}<dl class="row-body">${rest}</dl></div>`
+      // inline display so folding works even when a stale table.css is cached
+      return `<div class="row-card" data-folded="${fold === 'closed'}">${head}<dl class="row-body"${fold === 'closed' ? ' style="display:none"' : ''}>${rest}</dl></div>`
     })
     .join('')
   return `<div class="table-stack" data-fold="${fold}">${cards}</div>`
@@ -103,7 +104,7 @@ const stackHtml = table => {
 // The wiki fetches plugin scripts with a cache-buster but a stylesheet <link>
 // is cached by the browser, so stamp the version on it: a new release must
 // bring its own CSS or fold arrows render with last release's layout.
-const CSS_VERSION = '0.2.1'
+const CSS_VERSION = '0.2.2'
 const cssOnce = () => {
   const href = `/plugins/table/table.css?v=${CSS_VERSION}`
   if ($(`link[href='${href}']`).length) return
@@ -202,6 +203,7 @@ const bind = ($item, item) => {
   // fold / unfold a stacked row card; shift toggles every card the same way
   const setFolded = ($card, folded) => {
     $card.attr('data-folded', folded)
+    $card.find('> .row-body').css('display', folded ? 'none' : '')
     $card.find('> .row-key > .row-fold').text(folded ? '▸' : '▾').attr('aria-expanded', !folded)
   }
   $item.on('click', '.row-fold, .row-key', function (e) {
