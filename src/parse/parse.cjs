@@ -5,15 +5,17 @@
 // A table item's text is:
 //
 //   [directive lines]      CAPTION …  LAYOUT grid|stack|auto  SORT col [desc]  KEY col  FOLD closed|open|none
+//                          FIT first|even  (grid: fit the panel instead of scrolling)
 //   table source           GFM pipe table | CSV/TSV | JSON
 //
 // and parse() answers { directives, columns, rows, format, warnings } where
 // rows are arrays of cell strings in column order. Everything downstream —
 // rendering, CSV export, wiki.getData objects — is derived from that one shape.
 
-const DIRECTIVES = ['CAPTION', 'LAYOUT', 'SORT', 'KEY', 'FOLD']
+const DIRECTIVES = ['CAPTION', 'LAYOUT', 'SORT', 'KEY', 'FOLD', 'FIT']
 const FOLDS = ['closed', 'open', 'none']
 const LAYOUTS = ['grid', 'stack', 'auto']
+const FITS = ['first', 'even']
 
 const splitLines = text => String(text || '').replace(/\r\n?/g, '\n').split('\n')
 
@@ -28,9 +30,10 @@ const takeDirectives = lines => {
       if (Object.keys(directives).length) continue // blank after directives
       break
     }
-    const m = /^([A-Z]+)\s+(.*)$/.exec(line.trim())
+    const m = /^([A-Z]+)(?:\s+(.*))?$/.exec(line.trim())
     if (!m || !DIRECTIVES.includes(m[1])) break
-    const [, key, value] = m
+    const key = m[1]
+    const value = m[2] === undefined ? '' : m[2]
     switch (key) {
       case 'CAPTION':
         directives.caption = value.trim()
@@ -55,6 +58,12 @@ const takeDirectives = lines => {
         const v = value.trim().toLowerCase()
         if (FOLDS.includes(v)) directives.fold = v
         else warnings.push(`FOLD ${value.trim()} — expected closed, open or none`)
+        break
+      }
+      case 'FIT': {
+        const v = value.trim().toLowerCase() || 'first'
+        if (FITS.includes(v)) directives.fit = v
+        else warnings.push(`FIT ${value.trim()} — expected first or even`)
         break
       }
     }

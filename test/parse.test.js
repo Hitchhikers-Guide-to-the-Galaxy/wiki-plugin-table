@@ -105,3 +105,14 @@ test('FOLD directive: closed|open|none, else warning', () => {
   assert.equal(bad.directives.fold, undefined)
   assert.match(bad.warnings[0], /FOLD sideways/)
 })
+
+test('FIT directive: bare, first, even, else warning', () => {
+  const src = '\n| a | b |\n|---|---|\n| 1 | 2 |'
+  assert.equal(parse('FIT' + src).directives.fit, 'first')
+  assert.equal(parse('FIT first' + src).directives.fit, 'first')
+  assert.equal(parse('FIT even' + src).directives.fit, 'even')
+  const bad = parse('FIT sideways' + src)
+  assert.equal(bad.directives.fit, undefined)
+  assert.match(bad.warnings[0], /FIT sideways/)
+  assert.equal(parse(src.trimStart()).directives.fit, undefined)
+})

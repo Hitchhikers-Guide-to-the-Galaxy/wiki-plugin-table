@@ -75,7 +75,8 @@ const gridHtml = (table, { sortable = false, sortState = null } = {}) => {
     })
     .join('')
   const body = rows.map(r => `<tr>${r.map(v => `<td>${markup(v)}</td>`).join('')}</tr>`).join('')
-  return `<div class="table-scroll"><table class="table-grid"><thead><tr>${th}</tr></thead><tbody>${body}</tbody></table></div>`
+  const fit = table.directives.fit ? ` fit-${table.directives.fit}` : ''
+  return `<div class="table-scroll"><table class="table-grid${fit}"><thead><tr>${th}</tr></thead><tbody>${body}</tbody></table></div>`
 }
 
 // stack: one card per row. Cards fold to their key cell (FOLD closed, the

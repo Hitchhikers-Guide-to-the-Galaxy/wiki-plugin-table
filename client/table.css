@@ -29,6 +29,20 @@ table.table-grid th, table.table-grid td {
 table.table-grid th { background: #f2f2f2; font-weight: bold; white-space: nowrap; border-bottom: 2px solid #ccc; }
 table.table-grid td { min-width: 4em; max-width: 16em; }
 table.table-grid tbody tr:hover td { background: #fafafa; }
+
+/* FIT — fill the wiki panel exactly instead of sizing to content and scrolling.
+   fit-first: first column shrinks to its widest cell and never wraps (width:1%
+   is the shrink-to-fit idiom); the remaining columns share what is left.
+   fit-even: every column gets an equal share.
+   Both keep .table-scroll's overflow-x, so a first column too wide to fit
+   still degrades to a scroll rather than breaking the page. */
+table.table-grid.fit-first, table.table-grid.fit-even { width: 100%; min-width: 0; }
+table.table-grid.fit-first td, table.table-grid.fit-even td { max-width: none; min-width: 0; }
+table.table-grid.fit-first th:first-child, table.table-grid.fit-first td:first-child {
+  white-space: nowrap; width: 1%;
+}
+table.table-grid.fit-even { table-layout: fixed; }
+table.table-grid.fit-even th { white-space: normal; }
 table.table-grid th.sortable { cursor: pointer; }
 table.table-grid th.sortable:hover { background: #e8e8e8; }
 

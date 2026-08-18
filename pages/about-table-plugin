@@ -39,7 +39,17 @@
     {
       "type": "markdown",
       "id": "84927ba44540cef0",
-      "text": "# DSL\n\nThe item text may begin with directive lines, one per line, uppercase keyword then value. Everything after them is the table.\n\n- **CAPTION** text \u2014 a heading over the table and the title of the enlarged view.\n- **LAYOUT** grid | stack | auto \u2014 force a grid, force row cards, or let width decide (grid up to three columns). Default auto.\n- **SORT** column [desc] \u2014 initial sort.\n- **KEY** column \u2014 which column heads each stacked card. Default: the first column that is not all numbers.\n- **FOLD** closed | open | none \u2014 stacked cards start folded to their key cell (default), start open, or draw no arrows and never fold.\n\nCells may hold [[Wiki Links]], external links in the wiki's square-bracket form, *italic* and **bold**. Nothing else is interpreted; HTML is escaped."
+      "text": "# DSL\n\nThe item text may begin with directive lines, one per line, uppercase keyword then value. Everything after them is the table.\n\n- **CAPTION** text \u2014 a heading over the table and the title of the enlarged view.\n- **LAYOUT** grid | stack | auto \u2014 force a grid, force row cards, or let width decide (grid up to three columns). Default auto.\n- **SORT** column [desc] \u2014 initial sort.\n- **KEY** column \u2014 which column heads each stacked card. Default: the first column that is not all numbers.\n- **FOLD** closed | open | none \u2014 stacked cards start folded to their key cell (default), start open, or draw no arrows and never fold.\n- **FIT** first | even \u2014 grid only. By default a grid sizes to its content and scrolls sideways inside the item. FIT makes it fill the panel exactly: *first* shrinks the first column to its widest cell and never wraps it, the rest sharing what is left; *even* gives every column an equal share. A bare FIT means first. A first column too wide to fit still scrolls rather than breaking the page.\n\nCells may hold [[Wiki Links]], external links in the wiki's square-bracket form, *italic* and **bold**. Nothing else is interpreted; HTML is escaped."
+    },
+    {
+      "type": "markdown",
+      "id": "378001d00d067134",
+      "text": "A narrow grid that would otherwise scroll sideways, with **FIT** added. The first column sizes to its longest label and never wraps; the other two share the rest of the panel."
+    },
+    {
+      "type": "table",
+      "id": "0d5f9d28651cb29d",
+      "text": "CAPTION FIT first \u2014 the label column never wraps\nLAYOUT grid\nFIT\n\n| Directive | What it does | When to reach for it |\n|---|---|---|\n| FIT | fills the panel | a narrow table that almost fits |\n| LAYOUT | grid or cards | prose cells read better as cards |\n| KEY | heads each card | stack mode only |"
     },
     {
       "type": "markdown",
@@ -174,6 +184,38 @@
       },
       "date": 1787071904989,
       "provenance": "Claude Code with David Bovill, 2026-08-18: FOLD directive"
+    },
+    {
+      "type": "edit",
+      "id": "84927ba44540cef0",
+      "item": {
+        "type": "markdown",
+        "id": "84927ba44540cef0",
+        "text": "# DSL\n\nThe item text may begin with directive lines, one per line, uppercase keyword then value. Everything after them is the table.\n\n- **CAPTION** text \u2014 a heading over the table and the title of the enlarged view.\n- **LAYOUT** grid | stack | auto \u2014 force a grid, force row cards, or let width decide (grid up to three columns). Default auto.\n- **SORT** column [desc] \u2014 initial sort.\n- **KEY** column \u2014 which column heads each stacked card. Default: the first column that is not all numbers.\n- **FOLD** closed | open | none \u2014 stacked cards start folded to their key cell (default), start open, or draw no arrows and never fold.\n- **FIT** first | even \u2014 grid only. By default a grid sizes to its content and scrolls sideways inside the item. FIT makes it fill the panel exactly: *first* shrinks the first column to its widest cell and never wraps it, the rest sharing what is left; *even* gives every column an equal share. A bare FIT means first. A first column too wide to fit still scrolls rather than breaking the page.\n\nCells may hold [[Wiki Links]], external links in the wiki's square-bracket form, *italic* and **bold**. Nothing else is interpreted; HTML is escaped."
+      },
+      "date": 1787070000000
+    },
+    {
+      "type": "add",
+      "id": "378001d00d067134",
+      "item": {
+        "type": "markdown",
+        "id": "378001d00d067134",
+        "text": "A narrow grid that would otherwise scroll sideways, with **FIT** added. The first column sizes to its longest label and never wraps; the other two share the rest of the panel."
+      },
+      "after": "84927ba44540cef0",
+      "date": 1787070000000
+    },
+    {
+      "type": "add",
+      "id": "0d5f9d28651cb29d",
+      "item": {
+        "type": "table",
+        "id": "0d5f9d28651cb29d",
+        "text": "CAPTION FIT first \u2014 the label column never wraps\nLAYOUT grid\nFIT\n\n| Directive | What it does | When to reach for it |\n|---|---|---|\n| FIT | fills the panel | a narrow table that almost fits |\n| LAYOUT | grid or cards | prose cells read better as cards |\n| KEY | heads each card | stack mode only |"
+      },
+      "after": "378001d00d067134",
+      "date": 1787070000000
     }
   ],
   "plugin": "table"
