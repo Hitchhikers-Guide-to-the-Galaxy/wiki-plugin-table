@@ -90,7 +90,7 @@ const stackHtml = table => {
   const cards = rows
     .map(r => {
       const arrow = fold === 'none' ? '' : `<button class="row-fold" title="show the rest of this row (shift-click: all rows)" aria-expanded="${fold === 'open'}">${fold === 'open' ? '▾' : '▸'}</button>`
-      const head = `<div class="row-head">${arrow}<div class="row-key">${markup(r[key])}</div></div>`
+      const head = `<div class="row-key">${arrow}${markup(r[key])}</div>`
       const rest = table.columns
         .map((c, i) => (i === key ? '' : `<dt data-col="${i}">${markup(c)}</dt><dd>${markup(r[i])}</dd>`))
         .join('')
@@ -100,9 +100,14 @@ const stackHtml = table => {
   return `<div class="table-stack" data-fold="${fold}">${cards}</div>`
 }
 
+// The wiki fetches plugin scripts with a cache-buster but a stylesheet <link>
+// is cached by the browser, so stamp the version on it: a new release must
+// bring its own CSS or fold arrows render with last release's layout.
+const CSS_VERSION = '0.2.1'
 const cssOnce = () => {
-  if ($("link[href='/plugins/table/table.css']").length) return
-  $('<link rel="stylesheet" href="/plugins/table/table.css" type="text/css">').appendTo('head')
+  const href = `/plugins/table/table.css?v=${CSS_VERSION}`
+  if ($(`link[href='${href}']`).length) return
+  $(`<link rel="stylesheet" href="${href}" type="text/css">`).appendTo('head')
 }
 
 const emit = ($item, item) => {
@@ -197,7 +202,7 @@ const bind = ($item, item) => {
   // fold / unfold a stacked row card; shift toggles every card the same way
   const setFolded = ($card, folded) => {
     $card.attr('data-folded', folded)
-    $card.find('> .row-head > .row-fold').text(folded ? '▸' : '▾').attr('aria-expanded', !folded)
+    $card.find('> .row-key > .row-fold').text(folded ? '▸' : '▾').attr('aria-expanded', !folded)
   }
   $item.on('click', '.row-fold, .row-key', function (e) {
     if ($(e.target).closest('a').length) return // a [[link]] in the key cell is a link

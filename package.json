@@ -1,7 +1,7 @@
 {
   "name": "wiki-plugin-table",
-  "version": "0.2.0",
-  "description": "Federated Wiki - Table Plugin — tables from CSV, TSV, markdown or JSON that read well in the narrow panel, enlarge to a sortable grid, expose their data to other plugins, and answer over REST and MCP. Cloned from wiki-plugin-json.",
+  "version": "0.2.1",
+  "description": "Federated Wiki - Table Plugin \u2014 tables from CSV, TSV, markdown or JSON that read well in the narrow panel, enlarge to a sortable grid, expose their data to other plugins, and answer over REST and MCP. Cloned from wiki-plugin-json.",
   "type": "module",
   "main": "client/table.js",
   "files": [
