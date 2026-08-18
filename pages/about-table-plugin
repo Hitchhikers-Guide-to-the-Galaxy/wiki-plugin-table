@@ -59,7 +59,7 @@
     {
       "type": "markdown",
       "id": "7662cc697684616c",
-      "text": "# REST and MCP\n\nThe operations are declared in the package's api/openapi.json and mounted by the [[Farm Plugin]] under /system/api/table/ \u2014 the same declaration also becomes tools on the farm's MCP door at /system/api/mcp and a generated [[Table API]] page.\n\n- GET /system/api/table/read.json?slug=\u2026 \u2014 the first table on a page as columns, rows and records.\n- GET /system/api/table/list.json \u2014 every table on the site you asked at.\n- GET /system/api/table/csv.json?slug=\u2026 \u2014 the same as CSV.\n- POST /system/api/table/write.json?slug=\u2026&csv=\u2026 \u2014 push data, gated by the farm (owner login, private sites).\n\nFor json-plugin parity the plugin's own server answers GET /plugin/table/slug (append .csv for text/csv) and an api-key PUT for headless writers \u2014 see [[About Table API Keys]]."
+      "text": "# REST and MCP\n\nThe operations are declared in the package's api/openapi.json and mounted by the [[Farm Plugin]] under /system/api/table/ \u2014 the same declaration also becomes tools on the farm's MCP door at /system/api/mcp and a generated [[Table API]] page.\n\n- GET /system/api/table/read.json?slug=\u2026 \u2014 the first table on a page as columns, rows and records.\n- GET /system/api/table/list.json \u2014 every table on the site you asked at.\n- GET /system/api/table/csv.json?slug=\u2026 \u2014 the same as CSV.\n- POST /system/api/table/write.json?slug=\u2026&csv=\u2026 \u2014 push data, gated by the farm (owner login, private sites).\n\nFor json-plugin parity the plugin's own server answers GET /plugin/table/slug (append .csv for text/csv) and an api-key PUT for headless writers \u2014 see [[About Table API Keys]].\n\nThe write route is **dark by default**. It answers only on a site that has opted in by creating `status/api-keys.json` \u2014 the same file the [[Farm Plugin]]'s own key door reads, scopes `*` or `table.write` \u2014 and until then a PUT falls through to the wiki's ordinary 404 without reading a body or sending a CORS header. Add or remove the file and the route lights up or goes dark with no restart. The older `status/plugin/table/tokens.json` is still honoured."
     },
     {
       "type": "code",
@@ -216,6 +216,16 @@
       },
       "after": "378001d00d067134",
       "date": 1787070000000
+    },
+    {
+      "type": "edit",
+      "id": "7662cc697684616c",
+      "item": {
+        "type": "markdown",
+        "id": "7662cc697684616c",
+        "text": "# REST and MCP\n\nThe operations are declared in the package's api/openapi.json and mounted by the [[Farm Plugin]] under /system/api/table/ \u2014 the same declaration also becomes tools on the farm's MCP door at /system/api/mcp and a generated [[Table API]] page.\n\n- GET /system/api/table/read.json?slug=\u2026 \u2014 the first table on a page as columns, rows and records.\n- GET /system/api/table/list.json \u2014 every table on the site you asked at.\n- GET /system/api/table/csv.json?slug=\u2026 \u2014 the same as CSV.\n- POST /system/api/table/write.json?slug=\u2026&csv=\u2026 \u2014 push data, gated by the farm (owner login, private sites).\n\nFor json-plugin parity the plugin's own server answers GET /plugin/table/slug (append .csv for text/csv) and an api-key PUT for headless writers \u2014 see [[About Table API Keys]].\n\nThe write route is **dark by default**. It answers only on a site that has opted in by creating `status/api-keys.json` \u2014 the same file the [[Farm Plugin]]'s own key door reads, scopes `*` or `table.write` \u2014 and until then a PUT falls through to the wiki's ordinary 404 without reading a body or sending a CORS header. Add or remove the file and the route lights up or goes dark with no restart. The older `status/plugin/table/tokens.json` is still honoured."
+      },
+      "date": 1787083000000
     }
   ],
   "plugin": "table"

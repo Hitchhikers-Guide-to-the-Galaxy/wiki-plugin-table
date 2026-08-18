@@ -3,6 +3,9 @@
 // of a page, reads open to all, writes gated by an X-Api-Key held in the
 // site's status/plugin/table/tokens.json.
 //
+// The write route is dark unless the site has opted in with a key file, so a
+// site that only ever reads carries no write surface at all — see below.
+//
 // This is deliberately the ONLY thing this file does. Everything else the
 // plugin offers over HTTP — read.json, list.json, csv.json, write.json and
 // the MCP tools — is declared in api/openapi.json and mounted by
@@ -58,34 +61,47 @@ const startServer = ({ argv, app }) => {
   // at start-up; a farm starts a site's server on its first request, so the
   // very next request could beat the read. Read on demand instead, cached by
   // mtime, which also means editing the file needs no restart.
-  const siteDir = (argv && argv.data) || (argv && argv.status ? path.dirname(argv.status) : '.')
-  const tokenFile = path.join(siteDir, 'status', 'plugin', 'table', 'tokens.json')
-  let tokens = null
-  let tokensMtime = 0
-  const loadTokens = () => {
-    let stat
-    try {
-      stat = fs.statSync(tokenFile)
-    } catch {
-      tokens = null
-      return null
-    }
-    if (stat.mtimeMs !== tokensMtime) {
+  // Keys live in the site's status directory, which is not served over HTTP.
+  // The file is the same one the farm's own API-key door reads —
+  // status/api-keys.json, scopes "*" or "table.write" — so a site configures
+  // headless writes once and both doors honour it. The older
+  // status/plugin/table/tokens.json is still read, so nothing already set up
+  // stops working. Read on demand, cached by mtime: no restart to rotate a key.
+  const statusDir = argv && argv.status ? argv.status : path.join((argv && argv.data) || '.', 'status')
+  const keyFiles = [path.join(statusDir, 'api-keys.json'), path.join(statusDir, 'plugin', 'table', 'tokens.json')]
+  const cache = new Map() // file -> { mtimeMs, keys }
+  const loadKeys = () => {
+    let merged = null
+    for (const file of keyFiles) {
+      let stat
       try {
-        tokens = JSON.parse(fs.readFileSync(tokenFile, 'utf8'))
-        tokensMtime = stat.mtimeMs
-      } catch (e) {
-        console.log(`caution: ${tokenFile}: ${e.message}`)
-        tokens = null
+        stat = fs.statSync(file)
+      } catch {
+        cache.delete(file)
+        continue
       }
+      const hit = cache.get(file)
+      if (!hit || hit.mtimeMs !== stat.mtimeMs) {
+        try {
+          cache.set(file, { mtimeMs: stat.mtimeMs, keys: JSON.parse(fs.readFileSync(file, 'utf8')) })
+        } catch (e) {
+          console.log(`caution: ${file}: ${e.message}`)
+          cache.set(file, { mtimeMs: stat.mtimeMs, keys: null })
+        }
+      }
+      const k = cache.get(file).keys
+      if (k) merged = Object.assign(merged || {}, k)
     }
-    return tokens
+    return merged
   }
 
+  // Whether this site has opted in to headless writes at all.
+  const writesOffered = () => !!loadKeys()
+
   const authFor = (slug, key) => {
-    const t = loadTokens()
+    const t = loadKeys()
     if (!t || !key) return null
-    return (t[slug] && t[slug][key]) || (t['*'] && t['*'][key]) || null
+    return (t[slug] && t[slug][key]) || (t['table.write'] && t['table.write'][key]) || (t['*'] && t['*'][key]) || null
   }
 
   const readFrom = (slug, res, send) =>
@@ -112,7 +128,15 @@ const startServer = ({ argv, app }) => {
   })
 
   // PUT /plugin/table/:slug  body: {columns, rows} | array | {csv} | text/csv
-  app.put('/plugin/table/:slug', cors, textBody, (req, res, next) => {
+  //
+  // Mounted, but dark until the site opts in by writing a key file. Without one
+  // the route falls through to the wiki's own 404 before reading a body or
+  // sending a CORS header — a site that never authors carries no write surface,
+  // and a site that adds a key file later needs no restart. Mounting only when
+  // the file exists at start-up would look tidier and would silently ignore a
+  // key added afterwards, which is the worse of the two failures.
+  const whenOffered = (req, res, next) => (writesOffered() ? next() : next('route'))
+  app.put('/plugin/table/:slug', whenOffered, cors, textBody, (req, res, next) => {
     const slug = req.params.slug
     if (!/^[a-z0-9-]+$/.test(slug)) return next()
     const auth = authFor(slug, req.headers['x-api-key'])
