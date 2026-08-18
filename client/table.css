@@ -41,6 +41,10 @@ table.table-grid.fit-first td, table.table-grid.fit-even td { max-width: none; m
 table.table-grid.fit-first th:first-child, table.table-grid.fit-first td:first-child {
   white-space: nowrap; width: 1%;
 }
+/* th is globally nowrap so headings never break mid-phrase. Under FIT that
+   fights the point: if no heading may wrap, nothing can give and the table
+   overflows anyway. Let every heading but the first wrap. */
+table.table-grid.fit-first th:not(:first-child) { white-space: normal; }
 table.table-grid.fit-even { table-layout: fixed; }
 table.table-grid.fit-even th { white-space: normal; }
 table.table-grid th.sortable { cursor: pointer; }
