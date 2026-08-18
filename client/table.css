@@ -34,7 +34,7 @@ table.table-grid th.sortable:hover { background: #e8e8e8; }
 
 /* stack: one card per row, first/key column as the heading; cards fold to it */
 .table-stack .row-card { border: 1px solid #ddd; border-radius: 4px; padding: 5px 8px; margin: 0 0 4px 0; background: #fbfbfb; }
-.table-stack .row-key { font-weight: bold; cursor: default; }
+.table-stack .row-key { font-weight: normal; cursor: default; }  /* the [[link]] carries the emphasis */
 .table-stack[data-fold="closed"] .row-key, .table-stack[data-fold="open"] .row-key { cursor: pointer; }
 .table-stack .row-fold {
   display: inline-block; vertical-align: baseline; border: none; background: none; padding: 0;

@@ -104,7 +104,7 @@ const stackHtml = table => {
 // The wiki fetches plugin scripts with a cache-buster but a stylesheet <link>
 // is cached by the browser, so stamp the version on it: a new release must
 // bring its own CSS or fold arrows render with last release's layout.
-const CSS_VERSION = '0.2.2'
+const CSS_VERSION = '0.2.3'
 const cssOnce = () => {
   const href = `/plugins/table/table.css?v=${CSS_VERSION}`
   if ($(`link[href='${href}']`).length) return
