@@ -97,3 +97,11 @@ test('fromResource accepts strings and objects', () => {
   assert.deepEqual(fromResource([{ a: 1 }]), { columns: ['a'], rows: [['1']] })
   assert.equal(fromResource(null), null)
 })
+
+test('FOLD directive: closed|open|none, else warning', () => {
+  assert.equal(parse('FOLD open\n| a | b |\n|---|---|\n| 1 | 2 |').directives.fold, 'open')
+  assert.equal(parse('FOLD none\n| a | b |\n|---|---|\n| 1 | 2 |').directives.fold, 'none')
+  const bad = parse('FOLD sideways\n| a | b |\n|---|---|\n| 1 | 2 |')
+  assert.equal(bad.directives.fold, undefined)
+  assert.match(bad.warnings[0], /FOLD sideways/)
+})

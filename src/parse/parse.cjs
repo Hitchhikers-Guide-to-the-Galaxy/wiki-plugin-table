@@ -4,14 +4,15 @@
 //
 // A table item's text is:
 //
-//   [directive lines]      CAPTION …  LAYOUT grid|stack|auto  SORT col [desc]  KEY col
+//   [directive lines]      CAPTION …  LAYOUT grid|stack|auto  SORT col [desc]  KEY col  FOLD closed|open|none
 //   table source           GFM pipe table | CSV/TSV | JSON
 //
 // and parse() answers { directives, columns, rows, format, warnings } where
 // rows are arrays of cell strings in column order. Everything downstream —
 // rendering, CSV export, wiki.getData objects — is derived from that one shape.
 
-const DIRECTIVES = ['CAPTION', 'LAYOUT', 'SORT', 'KEY']
+const DIRECTIVES = ['CAPTION', 'LAYOUT', 'SORT', 'KEY', 'FOLD']
+const FOLDS = ['closed', 'open', 'none']
 const LAYOUTS = ['grid', 'stack', 'auto']
 
 const splitLines = text => String(text || '').replace(/\r\n?/g, '\n').split('\n')
@@ -50,6 +51,12 @@ const takeDirectives = lines => {
       case 'KEY':
         directives.key = value.trim()
         break
+      case 'FOLD': {
+        const v = value.trim().toLowerCase()
+        if (FOLDS.includes(v)) directives.fold = v
+        else warnings.push(`FOLD ${value.trim()} — expected closed, open or none`)
+        break
+      }
     }
   }
   return { directives, warnings, rest: lines.slice(i) }

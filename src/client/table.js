@@ -78,19 +78,26 @@ const gridHtml = (table, { sortable = false, sortState = null } = {}) => {
   return `<div class="table-scroll"><table class="table-grid"><thead><tr>${th}</tr></thead><tbody>${body}</tbody></table></div>`
 }
 
+// stack: one card per row. Cards fold to their key cell (FOLD closed, the
+// default) so a long table reads as a list of titles; ▸ opens one card,
+// shift-click opens or closes them all; FOLD open starts unfolded, FOLD none
+// draws no arrows at all. The key cell may be a [[link]] — the link opens the
+// row's own page, the arrow opens the row's detail in place.
 const stackHtml = table => {
   const key = keyColumn(table)
+  const fold = table.directives.fold || 'closed'
   const rows = sortRows(table.columns, table.rows, table.directives.sort)
   const cards = rows
     .map(r => {
-      const head = `<div class="row-key">${markup(r[key])}</div>`
+      const arrow = fold === 'none' ? '' : `<button class="row-fold" title="show the rest of this row (shift-click: all rows)" aria-expanded="${fold === 'open'}">${fold === 'open' ? '▾' : '▸'}</button>`
+      const head = `<div class="row-head">${arrow}<div class="row-key">${markup(r[key])}</div></div>`
       const rest = table.columns
         .map((c, i) => (i === key ? '' : `<dt data-col="${i}">${markup(c)}</dt><dd>${markup(r[i])}</dd>`))
         .join('')
-      return `<div class="row-card">${head}<dl>${rest}</dl></div>`
+      return `<div class="row-card" data-folded="${fold === 'closed'}">${head}<dl class="row-body">${rest}</dl></div>`
     })
     .join('')
-  return `<div class="table-stack">${cards}</div>`
+  return `<div class="table-stack" data-fold="${fold}">${cards}</div>`
 }
 
 const cssOnce = () => {
@@ -180,12 +187,26 @@ const openOverlay = ($item, item, table) => {
 
 const bind = ($item, item) => {
   $item.on('dblclick', e => {
-    if ($(e.target).closest('.table-enlarge, a').length) return
+    if ($(e.target).closest('.table-enlarge, .row-fold, a').length) return
     wiki.textEditor($item, item)
   })
   $item.find('.table-enlarge').on('click', e => {
     e.stopPropagation()
     openOverlay($item, item, tableOf(item))
+  })
+  // fold / unfold a stacked row card; shift toggles every card the same way
+  const setFolded = ($card, folded) => {
+    $card.attr('data-folded', folded)
+    $card.find('> .row-head > .row-fold').text(folded ? '▸' : '▾').attr('aria-expanded', !folded)
+  }
+  $item.on('click', '.row-fold, .row-key', function (e) {
+    if ($(e.target).closest('a').length) return // a [[link]] in the key cell is a link
+    if ($item.find('.table-stack').attr('data-fold') === 'none') return
+    e.stopPropagation()
+    const $card = $(this).closest('.row-card')
+    const folded = $card.attr('data-folded') !== 'true'
+    if (e.shiftKey) $item.find('.row-card').each((_, c) => setFolded($(c), folded))
+    else setFolded($card, folded)
   })
   // column highlight chatter, as the data plugin does
   $item.on('mouseenter', 'th, dt', function () {

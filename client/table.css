@@ -32,9 +32,18 @@ table.table-grid tbody tr:hover td { background: #fafafa; }
 table.table-grid th.sortable { cursor: pointer; }
 table.table-grid th.sortable:hover { background: #e8e8e8; }
 
-/* stack: one card per row, first/key column as the heading */
-.table-stack .row-card { border: 1px solid #ddd; border-radius: 4px; padding: 6px 8px; margin: 0 0 6px 0; background: #fbfbfb; }
-.table-stack .row-key { font-weight: bold; margin-bottom: 3px; }
+/* stack: one card per row, first/key column as the heading; cards fold to it */
+.table-stack .row-card { border: 1px solid #ddd; border-radius: 4px; padding: 5px 8px; margin: 0 0 4px 0; background: #fbfbfb; }
+.table-stack .row-head { display: flex; align-items: baseline; gap: 6px; }
+.table-stack .row-key { font-weight: bold; flex: 1; cursor: default; }
+.table-stack[data-fold="closed"] .row-key, .table-stack[data-fold="open"] .row-key { cursor: pointer; }
+.table-stack .row-fold {
+  border: none; background: none; padding: 0 2px; margin: 0; color: #888; cursor: pointer;
+  font-size: 12px; line-height: 1.2; width: 1.1em; text-align: center; flex: none;
+}
+.table-stack .row-fold:hover { color: #333; }
+.table-stack .row-card[data-folded="true"] > .row-body { display: none; }
+.table-stack .row-card[data-folded="false"] > .row-head { margin-bottom: 3px; }
 .table-stack dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; column-gap: 8px; row-gap: 1px; }
 .table-stack dt { color: #666; font-size: 12px; white-space: nowrap; margin: 0; }
 .table-stack dd { margin: 0; }

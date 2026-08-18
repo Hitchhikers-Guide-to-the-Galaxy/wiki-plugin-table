@@ -4,7 +4,7 @@
     {
       "type": "markdown",
       "id": "48167500a2ce35f9",
-      "text": "The **Table Plugin** puts a real table on a wiki page. Type CSV, TSV, a markdown pipe table or JSON into the item and it renders as a compact grid when it is narrow, or as stacked row cards when it is wide, so six columns still read in the panel. The ⤢ button opens the whole table as a sortable grid over the page. Double-click the item to edit its text."
+      "text": "The **Table Plugin** puts a real table on a wiki page. Type CSV, TSV, a markdown pipe table or JSON into the item and it renders as a compact grid when it is narrow, or as stacked row cards when it is wide, so six columns still read in the panel. The \u2922 button opens the whole table as a sortable grid over the page. Double-click the item to edit its text."
     },
     {
       "type": "table",
@@ -14,12 +14,12 @@
     {
       "type": "markdown",
       "id": "fa7e4b62da025aeb",
-      "text": "Wide tables stack. Each row becomes a card headed by the key column, so the table below — the one that prompted this plugin — reads top to bottom instead of squeezing six columns into four hundred pixels."
+      "text": "Wide tables stack. Each row becomes a card headed by the key column, so the table below \u2014 the one that prompted this plugin \u2014 reads top to bottom instead of squeezing six columns into four hundred pixels.\n\nCards fold. By default a stacked card shows only its key cell; the \u25b8 arrow (or a click on the title) opens the rest of the row, and shift-click opens or closes every card at once. Put a [[Wiki Link]] in the key cell and the folded list becomes a table of contents \u2014 the link opens the row's page in the lineup, the arrow opens the row in place. The `fedwiki-table-stack` skill rewrites a table into that shape and writes the row pages."
     },
     {
       "type": "table",
       "id": "683ab7f339a54b7f",
-      "text": "CAPTION The ranked research strands\n| # | Strand | Time to evidence | Reversible | Needs | Judgement |\n|---|---|---|---|---|---|\n| 1 | [[Agent Score]] — a score read by a human, an agent and OSC | weeks: the tabletop tests it directly | yes | the ensemble | do first; it is what the build needs |\n| 2 | [[Musical Intention]] — minimum representation of an intention | weeks–months | yes | reading + two embassies | second; the rain event is its first test case |\n| 3 | [[Improvisation Score]]s — event, graphic, text scores, conduction | reading only | yes | a library | run alongside 1 as reading |\n| 4 | [[Laban Notation]] — effort/flow/weight as gesture primitives | months, uncertain payoff | yes | a dance-literate reader | last; learn from it, do not adopt it |"
+      "text": "CAPTION The ranked research strands\n| # | Strand | Time to evidence | Reversible | Needs | Judgement |\n|---|---|---|---|---|---|\n| 1 | [[Agent Score]] \u2014 a score read by a human, an agent and OSC | weeks: the tabletop tests it directly | yes | the ensemble | do first; it is what the build needs |\n| 2 | [[Musical Intention]] \u2014 minimum representation of an intention | weeks\u2013months | yes | reading + two embassies | second; the rain event is its first test case |\n| 3 | [[Improvisation Score]]s \u2014 event, graphic, text scores, conduction | reading only | yes | a library | run alongside 1 as reading |\n| 4 | [[Laban Notation]] \u2014 effort/flow/weight as gesture primitives | months, uncertain payoff | yes | a dance-literate reader | last; learn from it, do not adopt it |"
     },
     {
       "type": "markdown",
@@ -34,22 +34,22 @@
     {
       "type": "markdown",
       "id": "ec3accb6e0d97927",
-      "text": "# Origins\n\nThis plugin is a clone of Ward Cunningham's [[JSON Plugin]] — the item owns its data, the server answers restful reads and api-key writes against the first such item on a page, and changes of configuration are journaled while pushed data is not. What is new is the rendering, the data interface, and the farm declaration that turns the same operations into REST routes and MCP tools."
+      "text": "# Origins\n\nThis plugin is a clone of Ward Cunningham's [[JSON Plugin]] \u2014 the item owns its data, the server answers restful reads and api-key writes against the first such item on a page, and changes of configuration are journaled while pushed data is not. What is new is the rendering, the data interface, and the farm declaration that turns the same operations into REST routes and MCP tools."
     },
     {
       "type": "markdown",
       "id": "84927ba44540cef0",
-      "text": "# DSL\n\nThe item text may begin with directive lines, one per line, uppercase keyword then value. Everything after them is the table.\n\n- **CAPTION** text — a heading over the table and the title of the enlarged view.\n- **LAYOUT** grid | stack | auto — force a grid, force row cards, or let width decide (grid up to three columns). Default auto.\n- **SORT** column [desc] — initial sort.\n- **KEY** column — which column heads each stacked card. Default: the first column that is not all numbers.\n\nCells may hold [[Wiki Links]], external links in the wiki's square-bracket form, *italic* and **bold**. Nothing else is interpreted; HTML is escaped."
+      "text": "# DSL\n\nThe item text may begin with directive lines, one per line, uppercase keyword then value. Everything after them is the table.\n\n- **CAPTION** text \u2014 a heading over the table and the title of the enlarged view.\n- **LAYOUT** grid | stack | auto \u2014 force a grid, force row cards, or let width decide (grid up to three columns). Default auto.\n- **SORT** column [desc] \u2014 initial sort.\n- **KEY** column \u2014 which column heads each stacked card. Default: the first column that is not all numbers.\n- **FOLD** closed | open | none \u2014 stacked cards start folded to their key cell (default), start open, or draw no arrows and never fold.\n\nCells may hold [[Wiki Links]], external links in the wiki's square-bracket form, *italic* and **bold**. Nothing else is interpreted; HTML is escaped."
     },
     {
       "type": "markdown",
       "id": "059606d82c39ac7e",
-      "text": "# Data Interface\n\nA rendered table item is a data source for the rest of the lineup.\n\n- It carries the class **table-source** and its DOM node answers **tableData()** with columns and rows — the house convention shared with the calendar-source of the [[Date Plugin]].\n- It also sets **item.data** (rows as objects keyed by column, numbers coerced) and **item.columns**, and carries the class **data**, so Ward's **wiki.getData** family — [[Bars Plugin]], [[Line Plugin]], [[Scatter Plugin]], [[Method Plugin]] — reads it like a [[Data Plugin]] item placed above them.\n- Hovering a header raises the same **thumb** event the data plugin uses for column highlighting."
+      "text": "# Data Interface\n\nA rendered table item is a data source for the rest of the lineup.\n\n- It carries the class **table-source** and its DOM node answers **tableData()** with columns and rows \u2014 the house convention shared with the calendar-source of the [[Date Plugin]].\n- It also sets **item.data** (rows as objects keyed by column, numbers coerced) and **item.columns**, and carries the class **data**, so Ward's **wiki.getData** family \u2014 [[Bars Plugin]], [[Line Plugin]], [[Scatter Plugin]], [[Method Plugin]] \u2014 reads it like a [[Data Plugin]] item placed above them.\n- Hovering a header raises the same **thumb** event the data plugin uses for column highlighting."
     },
     {
       "type": "markdown",
       "id": "7662cc697684616c",
-      "text": "# REST and MCP\n\nThe operations are declared in the package's api/openapi.json and mounted by the [[Farm Plugin]] under /system/api/table/ — the same declaration also becomes tools on the farm's MCP door at /system/api/mcp and a generated [[Table API]] page.\n\n- GET /system/api/table/read.json?slug=… — the first table on a page as columns, rows and records.\n- GET /system/api/table/list.json — every table on the site you asked at.\n- GET /system/api/table/csv.json?slug=… — the same as CSV.\n- POST /system/api/table/write.json?slug=…&csv=… — push data, gated by the farm (owner login, private sites).\n\nFor json-plugin parity the plugin's own server answers GET /plugin/table/slug (append .csv for text/csv) and an api-key PUT for headless writers — see [[About Table API Keys]]."
+      "text": "# REST and MCP\n\nThe operations are declared in the package's api/openapi.json and mounted by the [[Farm Plugin]] under /system/api/table/ \u2014 the same declaration also becomes tools on the farm's MCP door at /system/api/mcp and a generated [[Table API]] page.\n\n- GET /system/api/table/read.json?slug=\u2026 \u2014 the first table on a page as columns, rows and records.\n- GET /system/api/table/list.json \u2014 every table on the site you asked at.\n- GET /system/api/table/csv.json?slug=\u2026 \u2014 the same as CSV.\n- POST /system/api/table/write.json?slug=\u2026&csv=\u2026 \u2014 push data, gated by the farm (owner login, private sites).\n\nFor json-plugin parity the plugin's own server answers GET /plugin/table/slug (append .csv for text/csv) and an api-key PUT for headless writers \u2014 see [[About Table API Keys]]."
     },
     {
       "type": "code",
@@ -64,7 +64,7 @@
     {
       "type": "markdown",
       "id": "8ce1cd41ee1eacb2",
-      "text": "# Repositories\n\n- [https://github.com/Hitchhikers-Guide-to-the-Galaxy/wiki-plugin-table wiki-plugin-table on GitHub]\n- [https://www.npmjs.com/package/wiki-plugin-table wiki-plugin-table on npm]\n- [https://github.com/WardCunningham/wiki-plugin-json wiki-plugin-json — the original]"
+      "text": "# Repositories\n\n- [https://github.com/Hitchhikers-Guide-to-the-Galaxy/wiki-plugin-table wiki-plugin-table on GitHub]\n- [https://www.npmjs.com/package/wiki-plugin-table wiki-plugin-table on npm]\n- [https://github.com/WardCunningham/wiki-plugin-json wiki-plugin-json \u2014 the original]"
     },
     {
       "type": "markdown",
@@ -81,7 +81,7 @@
           {
             "type": "markdown",
             "id": "48167500a2ce35f9",
-            "text": "The **Table Plugin** puts a real table on a wiki page. Type CSV, TSV, a markdown pipe table or JSON into the item and it renders as a compact grid when it is narrow, or as stacked row cards when it is wide, so six columns still read in the panel. The ⤢ button opens the whole table as a sortable grid over the page. Double-click the item to edit its text."
+            "text": "The **Table Plugin** puts a real table on a wiki page. Type CSV, TSV, a markdown pipe table or JSON into the item and it renders as a compact grid when it is narrow, or as stacked row cards when it is wide, so six columns still read in the panel. The \u2922 button opens the whole table as a sortable grid over the page. Double-click the item to edit its text."
           },
           {
             "type": "table",
@@ -91,12 +91,12 @@
           {
             "type": "markdown",
             "id": "fa7e4b62da025aeb",
-            "text": "Wide tables stack. Each row becomes a card headed by the key column, so the table below — the one that prompted this plugin — reads top to bottom instead of squeezing six columns into four hundred pixels."
+            "text": "Wide tables stack. Each row becomes a card headed by the key column, so the table below \u2014 the one that prompted this plugin \u2014 reads top to bottom instead of squeezing six columns into four hundred pixels."
           },
           {
             "type": "table",
             "id": "683ab7f339a54b7f",
-            "text": "CAPTION The ranked research strands\n| # | Strand | Time to evidence | Reversible | Needs | Judgement |\n|---|---|---|---|---|---|\n| 1 | [[Agent Score]] — a score read by a human, an agent and OSC | weeks: the tabletop tests it directly | yes | the ensemble | do first; it is what the build needs |\n| 2 | [[Musical Intention]] — minimum representation of an intention | weeks–months | yes | reading + two embassies | second; the rain event is its first test case |\n| 3 | [[Improvisation Score]]s — event, graphic, text scores, conduction | reading only | yes | a library | run alongside 1 as reading |\n| 4 | [[Laban Notation]] — effort/flow/weight as gesture primitives | months, uncertain payoff | yes | a dance-literate reader | last; learn from it, do not adopt it |"
+            "text": "CAPTION The ranked research strands\n| # | Strand | Time to evidence | Reversible | Needs | Judgement |\n|---|---|---|---|---|---|\n| 1 | [[Agent Score]] \u2014 a score read by a human, an agent and OSC | weeks: the tabletop tests it directly | yes | the ensemble | do first; it is what the build needs |\n| 2 | [[Musical Intention]] \u2014 minimum representation of an intention | weeks\u2013months | yes | reading + two embassies | second; the rain event is its first test case |\n| 3 | [[Improvisation Score]]s \u2014 event, graphic, text scores, conduction | reading only | yes | a library | run alongside 1 as reading |\n| 4 | [[Laban Notation]] \u2014 effort/flow/weight as gesture primitives | months, uncertain payoff | yes | a dance-literate reader | last; learn from it, do not adopt it |"
           },
           {
             "type": "markdown",
@@ -111,22 +111,22 @@
           {
             "type": "markdown",
             "id": "ec3accb6e0d97927",
-            "text": "# Origins\n\nThis plugin is a clone of Ward Cunningham's [[JSON Plugin]] — the item owns its data, the server answers restful reads and api-key writes against the first such item on a page, and changes of configuration are journaled while pushed data is not. What is new is the rendering, the data interface, and the farm declaration that turns the same operations into REST routes and MCP tools."
+            "text": "# Origins\n\nThis plugin is a clone of Ward Cunningham's [[JSON Plugin]] \u2014 the item owns its data, the server answers restful reads and api-key writes against the first such item on a page, and changes of configuration are journaled while pushed data is not. What is new is the rendering, the data interface, and the farm declaration that turns the same operations into REST routes and MCP tools."
           },
           {
             "type": "markdown",
             "id": "84927ba44540cef0",
-            "text": "# DSL\n\nThe item text may begin with directive lines, one per line, uppercase keyword then value. Everything after them is the table.\n\n- **CAPTION** text — a heading over the table and the title of the enlarged view.\n- **LAYOUT** grid | stack | auto — force a grid, force row cards, or let width decide (grid up to three columns). Default auto.\n- **SORT** column [desc] — initial sort.\n- **KEY** column — which column heads each stacked card. Default: the first column that is not all numbers.\n\nCells may hold [[Wiki Links]], external links in the wiki's square-bracket form, *italic* and **bold**. Nothing else is interpreted; HTML is escaped."
+            "text": "# DSL\n\nThe item text may begin with directive lines, one per line, uppercase keyword then value. Everything after them is the table.\n\n- **CAPTION** text \u2014 a heading over the table and the title of the enlarged view.\n- **LAYOUT** grid | stack | auto \u2014 force a grid, force row cards, or let width decide (grid up to three columns). Default auto.\n- **SORT** column [desc] \u2014 initial sort.\n- **KEY** column \u2014 which column heads each stacked card. Default: the first column that is not all numbers.\n\nCells may hold [[Wiki Links]], external links in the wiki's square-bracket form, *italic* and **bold**. Nothing else is interpreted; HTML is escaped."
           },
           {
             "type": "markdown",
             "id": "059606d82c39ac7e",
-            "text": "# Data Interface\n\nA rendered table item is a data source for the rest of the lineup.\n\n- It carries the class **table-source** and its DOM node answers **tableData()** with columns and rows — the house convention shared with the calendar-source of the [[Date Plugin]].\n- It also sets **item.data** (rows as objects keyed by column, numbers coerced) and **item.columns**, and carries the class **data**, so Ward's **wiki.getData** family — [[Bars Plugin]], [[Line Plugin]], [[Scatter Plugin]], [[Method Plugin]] — reads it like a [[Data Plugin]] item placed above them.\n- Hovering a header raises the same **thumb** event the data plugin uses for column highlighting."
+            "text": "# Data Interface\n\nA rendered table item is a data source for the rest of the lineup.\n\n- It carries the class **table-source** and its DOM node answers **tableData()** with columns and rows \u2014 the house convention shared with the calendar-source of the [[Date Plugin]].\n- It also sets **item.data** (rows as objects keyed by column, numbers coerced) and **item.columns**, and carries the class **data**, so Ward's **wiki.getData** family \u2014 [[Bars Plugin]], [[Line Plugin]], [[Scatter Plugin]], [[Method Plugin]] \u2014 reads it like a [[Data Plugin]] item placed above them.\n- Hovering a header raises the same **thumb** event the data plugin uses for column highlighting."
           },
           {
             "type": "markdown",
             "id": "7662cc697684616c",
-            "text": "# REST and MCP\n\nThe operations are declared in the package's api/openapi.json and mounted by the [[Farm Plugin]] under /system/api/table/ — the same declaration also becomes tools on the farm's MCP door at /system/api/mcp and a generated [[Table API]] page.\n\n- GET /system/api/table/read.json?slug=… — the first table on a page as columns, rows and records.\n- GET /system/api/table/list.json — every table on the site you asked at.\n- GET /system/api/table/csv.json?slug=… — the same as CSV.\n- POST /system/api/table/write.json?slug=…&csv=… — push data, gated by the farm (owner login, private sites).\n\nFor json-plugin parity the plugin's own server answers GET /plugin/table/slug (append .csv for text/csv) and an api-key PUT for headless writers — see [[About Table API Keys]]."
+            "text": "# REST and MCP\n\nThe operations are declared in the package's api/openapi.json and mounted by the [[Farm Plugin]] under /system/api/table/ \u2014 the same declaration also becomes tools on the farm's MCP door at /system/api/mcp and a generated [[Table API]] page.\n\n- GET /system/api/table/read.json?slug=\u2026 \u2014 the first table on a page as columns, rows and records.\n- GET /system/api/table/list.json \u2014 every table on the site you asked at.\n- GET /system/api/table/csv.json?slug=\u2026 \u2014 the same as CSV.\n- POST /system/api/table/write.json?slug=\u2026&csv=\u2026 \u2014 push data, gated by the farm (owner login, private sites).\n\nFor json-plugin parity the plugin's own server answers GET /plugin/table/slug (append .csv for text/csv) and an api-key PUT for headless writers \u2014 see [[About Table API Keys]]."
           },
           {
             "type": "code",
@@ -141,7 +141,7 @@
           {
             "type": "markdown",
             "id": "8ce1cd41ee1eacb2",
-            "text": "# Repositories\n\n- [https://github.com/Hitchhikers-Guide-to-the-Galaxy/wiki-plugin-table wiki-plugin-table on GitHub]\n- [https://www.npmjs.com/package/wiki-plugin-table wiki-plugin-table on npm]\n- [https://github.com/WardCunningham/wiki-plugin-json wiki-plugin-json — the original]"
+            "text": "# Repositories\n\n- [https://github.com/Hitchhikers-Guide-to-the-Galaxy/wiki-plugin-table wiki-plugin-table on GitHub]\n- [https://www.npmjs.com/package/wiki-plugin-table wiki-plugin-table on npm]\n- [https://github.com/WardCunningham/wiki-plugin-json wiki-plugin-json \u2014 the original]"
           },
           {
             "type": "markdown",
@@ -151,7 +151,29 @@
         ]
       },
       "date": 1786975136046,
-      "provenance": "Authored by an AI agent — Claude Code via the [[clone-plugin]] skill, in dialogue with [[David Bovill]]. [https://claude.com/claude-code Claude Code]"
+      "provenance": "Authored by an AI agent \u2014 Claude Code via the [[clone-plugin]] skill, in dialogue with [[David Bovill]]. [https://claude.com/claude-code Claude Code]"
+    },
+    {
+      "type": "edit",
+      "id": "fa7e4b62da025aeb",
+      "item": {
+        "type": "markdown",
+        "id": "fa7e4b62da025aeb",
+        "text": "Wide tables stack. Each row becomes a card headed by the key column, so the table below \u2014 the one that prompted this plugin \u2014 reads top to bottom instead of squeezing six columns into four hundred pixels.\n\nCards fold. By default a stacked card shows only its key cell; the \u25b8 arrow (or a click on the title) opens the rest of the row, and shift-click opens or closes every card at once. Put a [[Wiki Link]] in the key cell and the folded list becomes a table of contents \u2014 the link opens the row's page in the lineup, the arrow opens the row in place. The `fedwiki-table-stack` skill rewrites a table into that shape and writes the row pages."
+      },
+      "date": 1787071904989,
+      "provenance": "Claude Code with David Bovill, 2026-08-18: 0.2.0 foldable stack cards"
+    },
+    {
+      "type": "edit",
+      "id": "84927ba44540cef0",
+      "item": {
+        "type": "markdown",
+        "id": "84927ba44540cef0",
+        "text": "# DSL\n\nThe item text may begin with directive lines, one per line, uppercase keyword then value. Everything after them is the table.\n\n- **CAPTION** text \u2014 a heading over the table and the title of the enlarged view.\n- **LAYOUT** grid | stack | auto \u2014 force a grid, force row cards, or let width decide (grid up to three columns). Default auto.\n- **SORT** column [desc] \u2014 initial sort.\n- **KEY** column \u2014 which column heads each stacked card. Default: the first column that is not all numbers.\n- **FOLD** closed | open | none \u2014 stacked cards start folded to their key cell (default), start open, or draw no arrows and never fold.\n\nCells may hold [[Wiki Links]], external links in the wiki's square-bracket form, *italic* and **bold**. Nothing else is interpreted; HTML is escaped."
+      },
+      "date": 1787071904989,
+      "provenance": "Claude Code with David Bovill, 2026-08-18: FOLD directive"
     }
   ],
   "plugin": "table"
