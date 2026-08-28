@@ -20,3 +20,13 @@ const result = await esbuild.build({
 
 writeFileSync('meta-client.json', JSON.stringify(result.metafile))
 console.log(`built client/table.js (css v${version})`)
+
+// Modern face (Suite Quarantine migration): same core, plain ES module.
+esbuild.build({
+  entryPoints: ['src/client/table-modern.js'],
+  bundle: true,
+  format: 'esm',
+  outfile: 'client/table.mjs',
+  sourcemap: true,
+  minify: true,
+}).then(() => console.log('built client/table.mjs (modern)'))
