@@ -19,7 +19,8 @@ const cssOnce = () => {
 export function emit(el, item, context) {
   cssOnce()
   const resolve = context.resolveLinks
-  const table = tableOf(item)
+  // the contract carries no owner flag yet: a column that can save gets grips
+  const table = tableOf(item, { canWrite: !!context.save })
   const layout = layoutFor(table)
   const caption = table.directives.caption ? `<div class="table-caption">${markup(table.directives.caption, resolve)}</div>` : ''
   const warnings = table.warnings.length ? `<div class="table-warning">${table.warnings.map(escape).join('<br>')}</div>` : ''

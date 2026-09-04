@@ -13,9 +13,12 @@ const cssOnce = () => {
   $(`<link rel="stylesheet" href="${href}" type="text/css">`).appendTo('head')
 }
 
+// the page's own view template sets isOwner; only an owner can save a drop
+const canWrite = () => typeof isOwner !== 'undefined' && !!isOwner
+
 const emit = ($item, item) => {
   cssOnce()
-  const table = tableOf(item)
+  const table = tableOf(item, { canWrite: canWrite() })
   const layout = layoutFor(table)
   const caption = table.directives.caption ? `<div class="table-caption">${markup(table.directives.caption)}</div>` : ''
   const warnings = table.warnings.length ? `<div class="table-warning">${table.warnings.map(escape).join('<br>')}</div>` : ''

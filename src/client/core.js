@@ -49,25 +49,26 @@ const markup = (cell, resolve) => {
 
 // ---------- reading the item -----------------------------------------------
 
-/** One shape for the renderer, whichever way the data arrived. */
-const tableOf = item => {
+/** One shape for the renderer, whichever way the data arrived. canWrite says
+ *  whether this reader may save: grips only show to someone who can drop. */
+const tableOf = (item, { canWrite = false } = {}) => {
   const parsed = parse(item.text || '')
   const pushed = fromResource(item.resource)
   if (pushed && pushed.columns.length) {
-    return { ...parsed, columns: pushed.columns, rows: pushed.rows, source: 'resource' }
+    return { ...parsed, columns: pushed.columns, rows: pushed.rows, source: 'resource', reorder: false }
   }
   // a dragged order only means something in the order the rows are typed
   if (parsed.directives.reorder && parsed.directives.sort) {
     parsed.warnings.push('REORDER shows rows as typed — SORT ignored')
     parsed.directives = { ...parsed.directives, sort: undefined }
   }
-  return { ...parsed, source: 'text' }
+  return { ...parsed, source: 'text', reorder: !!parsed.directives.reorder && canWrite }
 }
 
-// REORDER: rows drag only when the text owns them (pushed data has no text order)
-const canReorder = table => !!table.directives.reorder && table.source === 'text'
-const gripHtml = table => (canReorder(table) ? '<span class="row-grip" draggable="true" title="drag to reorder">⠿</span>' : '')
+// the lead cell: grip (REORDER, writers only) and/or number (INDEX), tight together
+const gripHtml = table => (table.reorder ? '<span class="row-grip" draggable="true" title="drag to reorder">⠿</span>' : '')
 const indexHtml = (table, n) => (table.directives.index ? `<span class="row-index">${n}</span>` : '')
+const hasLead = table => table.reorder || !!table.directives.index
 
 const layoutFor = table => {
   const l = table.directives.layout || 'auto'
@@ -79,8 +80,8 @@ const layoutFor = table => {
 
 const gridHtml = (table, { sortable = false, sortState = null, resolve = null } = {}) => {
   const rows = sortState ? sortRows(table.columns, table.rows, sortState) : sortRows(table.columns, table.rows, table.directives.sort)
-  const grip = canReorder(table) && !sortable // the overlay sorts, it does not drag
-  const lead = (grip ? '<th class="row-grip-cell"></th>' : '') + (table.directives.index ? `<th class="row-index-cell">${escape(table.directives.index)}</th>` : '')
+  const t = sortable ? { ...table, reorder: false } : table // the overlay sorts, it does not drag
+  const lead = hasLead(t) ? `<th class="row-lead">${t.directives.index ? escape(t.directives.index) : ''}</th>` : ''
   const th = table.columns
     .map((c, i) => {
       const dir = sortState && sortState.column === c ? (sortState.desc ? ' ▾' : ' ▴') : ''
@@ -89,7 +90,7 @@ const gridHtml = (table, { sortable = false, sortState = null, resolve = null } 
     .join('')
   const body = rows
     .map((r, n) => {
-      const cells = (grip ? `<td class="row-grip-cell">${gripHtml(table)}</td>` : '') + (table.directives.index ? `<td class="row-index-cell">${indexHtml(table, n + 1)}</td>` : '')
+      const cells = hasLead(t) ? `<td class="row-lead">${gripHtml(t)}${indexHtml(t, n + 1)}</td>` : ''
       return `<tr data-row="${table.rows.indexOf(r)}">${cells}${r.map(v => `<td>${markup(v, resolve)}</td>`).join('')}</tr>`
     })
     .join('')
