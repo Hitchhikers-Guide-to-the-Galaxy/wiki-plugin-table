@@ -116,3 +116,29 @@ test('FIT directive: bare, first, even, else warning', () => {
   assert.match(bad.warnings[0], /FIT sideways/)
   assert.equal(parse(src.trimStart()).directives.fit, undefined)
 })
+
+test('REORDER and INDEX directives', () => {
+  const src = '\n| a | b |\n|---|---|\n| 1 | 2 |'
+  assert.equal(parse('REORDER' + src).directives.reorder, true)
+  assert.equal(parse('REORDER off' + src).directives.reorder, false)
+  assert.equal(parse('INDEX' + src).directives.index, '#')
+  assert.equal(parse('INDEX Rank' + src).directives.index, 'Rank')
+  assert.deepEqual(parse('CAPTION x\nINDEX' + src).head, ['CAPTION x', 'INDEX'])
+})
+
+test('serialize round-trips gfm, csv, tsv and json; moveRow moves one row', () => {
+  const { serialize, moveRow } = require('../src/parse/parse.cjs')
+  const gfm = 'CAPTION Styles\nREORDER\n| Style | Feels like |\n| --- | --- |\n| [[Star Chart]] | a night sky |\n| [[The Reef]] | an aquarium, a \\| b |\n'
+  const t = parse(gfm)
+  assert.equal(serialize(t), gfm)
+  const moved = serialize({ ...t, rows: moveRow(t.rows, 1, 0) })
+  assert.equal(parse(moved).rows[0][0], '[[The Reef]]')
+  assert.equal(parse(moved).rows[1][1], 'a night sky')
+  for (const src of ['a,b\n"x, y",2\n3,4\n', 'a\tb\n1\t2\n', '{\n  "columns": [\n    "a"\n  ],\n  "rows": [\n    [\n      "1"\n    ]\n  ]\n}\n']) {
+    const p = parse(src)
+    assert.deepEqual(parse(serialize(p)).rows, p.rows, src)
+    assert.equal(parse(serialize(p)).format, p.format)
+  }
+  assert.deepEqual(moveRow([1, 2, 3, 4], 0, 2), [2, 3, 1, 4])
+  assert.deepEqual(moveRow([1, 2, 3, 4], 3, 1), [1, 4, 2, 3])
+})

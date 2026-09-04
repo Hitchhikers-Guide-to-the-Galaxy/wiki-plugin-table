@@ -8,7 +8,7 @@
 
 import parselib from '../parse/parse.cjs'
 
-const { parse, fromResource, toObjects, sortRows, keyColumn } = parselib
+const { parse, serialize, moveRow, fromResource, toObjects, sortRows, keyColumn } = parselib
 
 // ---------- helpers carried over from json ---------------------------------
 
@@ -56,8 +56,18 @@ const tableOf = item => {
   if (pushed && pushed.columns.length) {
     return { ...parsed, columns: pushed.columns, rows: pushed.rows, source: 'resource' }
   }
+  // a dragged order only means something in the order the rows are typed
+  if (parsed.directives.reorder && parsed.directives.sort) {
+    parsed.warnings.push('REORDER shows rows as typed — SORT ignored')
+    parsed.directives = { ...parsed.directives, sort: undefined }
+  }
   return { ...parsed, source: 'text' }
 }
+
+// REORDER: rows drag only when the text owns them (pushed data has no text order)
+const canReorder = table => !!table.directives.reorder && table.source === 'text'
+const gripHtml = table => (canReorder(table) ? '<span class="row-grip" draggable="true" title="drag to reorder">⠿</span>' : '')
+const indexHtml = (table, n) => (table.directives.index ? `<span class="row-index">${n}</span>` : '')
 
 const layoutFor = table => {
   const l = table.directives.layout || 'auto'
@@ -69,15 +79,22 @@ const layoutFor = table => {
 
 const gridHtml = (table, { sortable = false, sortState = null, resolve = null } = {}) => {
   const rows = sortState ? sortRows(table.columns, table.rows, sortState) : sortRows(table.columns, table.rows, table.directives.sort)
+  const grip = canReorder(table) && !sortable // the overlay sorts, it does not drag
+  const lead = (grip ? '<th class="row-grip-cell"></th>' : '') + (table.directives.index ? `<th class="row-index-cell">${escape(table.directives.index)}</th>` : '')
   const th = table.columns
     .map((c, i) => {
       const dir = sortState && sortState.column === c ? (sortState.desc ? ' ▾' : ' ▴') : ''
       return `<th data-col="${i}"${sortable ? ' class="sortable" title="click to sort"' : ''}>${markup(c, resolve)}${dir}</th>`
     })
     .join('')
-  const body = rows.map(r => `<tr>${r.map(v => `<td>${markup(v, resolve)}</td>`).join('')}</tr>`).join('')
+  const body = rows
+    .map((r, n) => {
+      const cells = (grip ? `<td class="row-grip-cell">${gripHtml(table)}</td>` : '') + (table.directives.index ? `<td class="row-index-cell">${indexHtml(table, n + 1)}</td>` : '')
+      return `<tr data-row="${table.rows.indexOf(r)}">${cells}${r.map(v => `<td>${markup(v, resolve)}</td>`).join('')}</tr>`
+    })
+    .join('')
   const fit = table.directives.fit ? ` fit-${table.directives.fit}` : ''
-  return `<div class="table-scroll"><table class="table-grid${fit}"><thead><tr>${th}</tr></thead><tbody>${body}</tbody></table></div>`
+  return `<div class="table-scroll"><table class="table-grid${fit}"><thead><tr>${lead}${th}</tr></thead><tbody>${body}</tbody></table></div>`
 }
 
 // stack: one card per row. Cards fold to their key cell (FOLD closed, the
@@ -90,18 +107,71 @@ const stackHtml = (table, resolve = null) => {
   const fold = table.directives.fold || 'closed'
   const rows = sortRows(table.columns, table.rows, table.directives.sort)
   const cards = rows
-    .map(r => {
+    .map((r, n) => {
       const arrow = fold === 'none' ? '' : `<button class="row-fold" title="show the rest of this row (shift-click: all rows)" aria-expanded="${fold === 'open'}">${fold === 'open' ? '▾' : '▸'}</button>`
-      const head = `<div class="row-key">${arrow}${markup(r[key], resolve)}</div>`
+      const head = `<div class="row-key">${gripHtml(table)}${arrow}${indexHtml(table, n + 1)}${markup(r[key], resolve)}</div>`
       const rest = table.columns
         .map((c, i) => (i === key ? '' : `<dt data-col="${i}">${markup(c, resolve)}</dt><dd>${markup(r[i], resolve)}</dd>`))
         .join('')
       // inline display so folding works even when a stale table.css is cached
-      return `<div class="row-card" data-folded="${fold === 'closed'}">${head}<dl class="row-body"${fold === 'closed' ? ' style="display:none"' : ''}>${rest}</dl></div>`
+      return `<div class="row-card" data-row="${table.rows.indexOf(r)}" data-folded="${fold === 'closed'}">${head}<dl class="row-body"${fold === 'closed' ? ' style="display:none"' : ''}>${rest}</dl></div>`
     })
     .join('')
   return `<div class="table-stack" data-fold="${fold}">${cards}</div>`
 }
 
+// ---------- reorder by drag ------------------------------------------------
+// Plain DOM, HTML5 drag and drop, no jQuery: the grip is the drag source, the
+// rows (tr or row-card, each stamped data-row = its index in the text) are the
+// targets. mousedown on the grip stops at the item so the wiki's own story
+// sortable never sees it. onMove(from, to) receives text-order indexes.
 
-export { ago, stats, escape, emphasis, markup, tableOf, layoutFor, gridHtml, stackHtml }
+const bindReorder = (el, onMove) => {
+  const rowOf = target => target && target.closest('[data-row]')
+  let from = null
+  const clear = () => el.querySelectorAll('.drop-before, .drop-after').forEach(r => r.classList.remove('drop-before', 'drop-after'))
+  el.addEventListener('mousedown', e => {
+    if (e.target.closest('.row-grip')) e.stopPropagation()
+  })
+  el.addEventListener('dragstart', e => {
+    const row = e.target.closest && e.target.closest('.row-grip') ? rowOf(e.target) : null
+    if (!row) return e.preventDefault()
+    from = +row.dataset.row
+    e.dataTransfer.effectAllowed = 'move'
+    e.dataTransfer.setData('text/plain', String(from))
+    e.dataTransfer.setDragImage(row, 10, 10)
+  })
+  el.addEventListener('dragover', e => {
+    const row = rowOf(e.target)
+    if (from === null || !row) return
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+    const r = row.getBoundingClientRect()
+    const after = e.clientY > r.top + r.height / 2
+    clear()
+    row.classList.add(after ? 'drop-after' : 'drop-before')
+  })
+  el.addEventListener('drop', e => {
+    const row = rowOf(e.target)
+    if (from === null || !row) return
+    e.preventDefault()
+    const after = row.classList.contains('drop-after')
+    let to = +row.dataset.row + (after ? 1 : 0)
+    if (to > from) to-- // the row leaves before it lands
+    clear()
+    if (to !== from) onMove(from, to)
+    from = null
+  })
+  el.addEventListener('dragend', () => {
+    clear()
+    from = null
+  })
+}
+
+/** The item text with one row moved — what a drop writes back. */
+const reorderedText = (text, from, to) => {
+  const t = parse(text)
+  return serialize({ ...t, rows: moveRow(t.rows, from, to) })
+}
+
+export { ago, stats, escape, emphasis, markup, tableOf, layoutFor, gridHtml, stackHtml, bindReorder, reorderedText }

@@ -2,7 +2,7 @@
 // Core rendering lives in core.js, shared with the modern module.
 import parselib from '../parse/parse.cjs'
 const { parse, fromResource, toObjects, sortRows, keyColumn } = parselib
-import { ago, stats, escape, emphasis, markup, tableOf, layoutFor, gridHtml, stackHtml } from './core.js'
+import { ago, stats, escape, emphasis, markup, tableOf, layoutFor, gridHtml, stackHtml, bindReorder, reorderedText } from './core.js'
 // The wiki fetches plugin scripts with a cache-buster but a stylesheet <link>
 // is cached by the browser, so stamp the version on it: a new release must
 // bring its own CSS or fold arrows render with last release's layout.
@@ -120,6 +120,14 @@ const bind = ($item, item) => {
   // column highlight chatter, as the data plugin does
   $item.on('mouseenter', 'th, dt', function () {
     $item.trigger('thumb', $(this).text())
+  })
+  // REORDER: a drop rewrites the text, journals an edit, redraws the item
+  bindReorder($item.get(0), (from, to) => {
+    item.text = reorderedText(item.text, from, to)
+    wiki.pageHandler.put($item.parents('.page:first'), { type: 'edit', id: item.id, item })
+    $item.empty()
+    emit($item, item)
+    bind($item, item)
   })
 }
 
