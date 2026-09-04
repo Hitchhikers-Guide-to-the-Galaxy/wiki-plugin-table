@@ -71,9 +71,9 @@ table.table-grid th.sortable:hover { background: #e8e8e8; }
 .row-grip:hover { color: #333; }
 .row-grip:active { cursor: grabbing; }
 .row-index { color: #666; font-variant-numeric: tabular-nums; margin-right: 4px; }
-table.table-grid .row-lead { width: 1%; min-width: 0; white-space: nowrap; padding-right: 2px; }
-table.table-grid .row-lead + th, table.table-grid .row-lead + td { padding-left: 3px; }
-table.table-grid .row-lead .row-grip { margin-right: 2px; }
+table.table-grid .row-lead { width: 1%; min-width: 0; white-space: nowrap; padding-right: 4px; }
+table.table-grid .row-lead + th, table.table-grid .row-lead + td { padding-left: 5px; }
+table.table-grid .row-lead .row-grip { margin-right: 4px; }
 table.table-grid .row-lead .row-index { margin: 0; }
 tr.drop-before td { box-shadow: inset 0 2px 0 #4a90d9; }
 tr.drop-after td { box-shadow: inset 0 -2px 0 #4a90d9; }
