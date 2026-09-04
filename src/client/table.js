@@ -2,7 +2,7 @@
 // Core rendering lives in core.js, shared with the modern module.
 import parselib from '../parse/parse.cjs'
 const { parse, fromResource, toObjects, sortRows, keyColumn } = parselib
-import { ago, stats, escape, emphasis, markup, tableOf, layoutFor, gridHtml, stackHtml } from './core.js'
+import { ago, stats, escape, emphasis, markup, tableOf, layoutFor, gridHtml, stackHtml, bindReorder, reorderedText } from './core.js'
 // The wiki fetches plugin scripts with a cache-buster but a stylesheet <link>
 // is cached by the browser, so stamp the version on it: a new release must
 // bring its own CSS or fold arrows render with last release's layout.
@@ -13,9 +13,12 @@ const cssOnce = () => {
   $(`<link rel="stylesheet" href="${href}" type="text/css">`).appendTo('head')
 }
 
+// the page's own view template sets isOwner; only an owner can save a drop
+const canWrite = () => typeof isOwner !== 'undefined' && !!isOwner
+
 const emit = ($item, item) => {
   cssOnce()
-  const table = tableOf(item)
+  const table = tableOf(item, { canWrite: canWrite() })
   const layout = layoutFor(table)
   const caption = table.directives.caption ? `<div class="table-caption">${markup(table.directives.caption)}</div>` : ''
   const warnings = table.warnings.length ? `<div class="table-warning">${table.warnings.map(escape).join('<br>')}</div>` : ''
@@ -120,6 +123,14 @@ const bind = ($item, item) => {
   // column highlight chatter, as the data plugin does
   $item.on('mouseenter', 'th, dt', function () {
     $item.trigger('thumb', $(this).text())
+  })
+  // REORDER: a drop rewrites the text, journals an edit, redraws the item
+  bindReorder($item.get(0), (from, to) => {
+    item.text = reorderedText(item.text, from, to)
+    wiki.pageHandler.put($item.parents('.page:first'), { type: 'edit', id: item.id, item })
+    $item.empty()
+    emit($item, item)
+    bind($item, item)
   })
 }
 

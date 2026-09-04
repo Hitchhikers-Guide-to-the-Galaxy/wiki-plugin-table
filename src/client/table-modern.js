@@ -4,7 +4,7 @@
 // context.internalLink.
 import parselib from '../parse/parse.cjs'
 const { toObjects } = parselib
-import { ago, stats, escape, markup, tableOf, layoutFor, gridHtml, stackHtml } from './core.js'
+import { ago, stats, escape, markup, tableOf, layoutFor, gridHtml, stackHtml, bindReorder, reorderedText } from './core.js'
 
 const cssOnce = () => {
   const href = '/plugins/table/table.css?v=modern'
@@ -19,7 +19,8 @@ const cssOnce = () => {
 export function emit(el, item, context) {
   cssOnce()
   const resolve = context.resolveLinks
-  const table = tableOf(item)
+  // the contract carries no owner flag yet: a column that can save gets grips
+  const table = tableOf(item, { canWrite: !!context.save })
   const layout = layoutFor(table)
   const caption = table.directives.caption ? `<div class="table-caption">${markup(table.directives.caption, resolve)}</div>` : ''
   const warnings = table.warnings.length ? `<div class="table-warning">${table.warnings.map(escape).join('<br>')}</div>` : ''
@@ -114,5 +115,12 @@ export function bind(el, item, context) {
     const folded = card.dataset.folded !== 'true'
     if (e.shiftKey) el.querySelectorAll('.row-card').forEach((c) => setFolded(c, folded))
     else setFolded(card, folded)
+  })
+  // REORDER: a drop saves an edit through the column (context.save) and redraws
+  bindReorder(el, (from, to) => {
+    const next = { ...item, text: reorderedText(item.text, from, to) }
+    if (context.save) context.save({ type: 'edit', id: item.id, item: next })
+    emit(el, next, context)
+    bind(el, next, context)
   })
 }

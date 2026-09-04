@@ -6,13 +6,15 @@
 //
 //   [directive lines]      CAPTION …  LAYOUT grid|stack|auto  SORT col [desc]  KEY col  FOLD closed|open|none
 //                          FIT first|even  (grid: fit the panel instead of scrolling)
+//                          REORDER [off]  (rows drag; the new order is written back to the text)
+//                          INDEX [heading]  (a counted first column, 1..n in display order)
 //   table source           GFM pipe table | CSV/TSV | JSON
 //
 // and parse() answers { directives, columns, rows, format, warnings } where
 // rows are arrays of cell strings in column order. Everything downstream —
 // rendering, CSV export, wiki.getData objects — is derived from that one shape.
 
-const DIRECTIVES = ['CAPTION', 'LAYOUT', 'SORT', 'KEY', 'FOLD', 'FIT']
+const DIRECTIVES = ['CAPTION', 'LAYOUT', 'SORT', 'KEY', 'FOLD', 'FIT', 'REORDER', 'INDEX']
 const FOLDS = ['closed', 'open', 'none']
 const LAYOUTS = ['grid', 'stack', 'auto']
 const FITS = ['first', 'even']
@@ -66,9 +68,17 @@ const takeDirectives = lines => {
         else warnings.push(`FIT ${value.trim()} — expected first or even`)
         break
       }
+      case 'REORDER':
+        directives.reorder = !/^(off|none|false)$/i.test(value.trim())
+        break
+      case 'INDEX':
+        directives.index = value.trim() || '#'
+        break
     }
   }
-  return { directives, warnings, rest: lines.slice(i) }
+  // head: the directive lines verbatim, so a rewrite keeps them as typed
+  const head = lines.slice(0, i).filter(l => l.trim())
+  return { directives, warnings, head, rest: lines.slice(i) }
 }
 
 // ---------- CSV / TSV (RFC 4180-ish, quoted fields, either delimiter) -------
@@ -178,12 +188,12 @@ const cellString = v => (v === null || v === undefined ? '' : typeof v === 'obje
  * @returns {{directives:object, columns:string[], rows:string[][], format:string, warnings:string[]}}
  */
 const parse = text => {
-  const { directives, warnings, rest } = takeDirectives(splitLines(text))
+  const { directives, warnings, head, rest } = takeDirectives(splitLines(text))
   const body = rest.join('\n').trim()
   let columns = []
   let rows = []
   let format = 'empty'
-  if (!body) return { directives, columns, rows, format, warnings }
+  if (!body) return { directives, columns, rows, format, warnings, head }
 
   if (/^[[{]/.test(body)) {
     try {
@@ -191,7 +201,7 @@ const parse = text => {
       format = 'json'
     } catch (e) {
       warnings.push(`JSON did not parse: ${e.message}`)
-      return { directives, columns: [], rows: [], format: 'json', warnings }
+      return { directives, columns: [], rows: [], format: 'json', warnings, head }
     }
   } else if (rest.some(isSeparator) && body.includes('|')) {
     const table = parseGfm(rest)
@@ -214,8 +224,32 @@ const parse = text => {
     return r.length < width ? r.concat(Array(width - r.length).fill('')) : r.slice(0, width)
   })
   if (ragged) warnings.push('some rows did not match the header width and were padded or trimmed')
-  return { directives, columns, rows, format, warnings }
+  return { directives, columns, rows, format, warnings, head }
 }
+
+// ---------- writing the text back ------------------------------------------
+// The inverse of parse for the three text formats: the directive lines as
+// typed, then the table in the format it arrived in. Alignment colons in a
+// GFM separator and CSV quoting choices are not kept; the data is.
+
+const gfmCell = v => String(v).replace(/\|/g, '\\|')
+const serialize = ({ head = [], columns, rows, format }) => {
+  let body
+  if (format === 'json') body = JSON.stringify({ columns, rows }, null, 2)
+  else if (format === 'tsv') body = [columns, ...rows].map(r => r.join('\t')).join('\n')
+  else if (format === 'csv') body = toCsv(columns, rows).trimEnd()
+  else body = [columns, Array(columns.length).fill('---'), ...rows].map(r => `| ${r.map(gfmCell).join(' | ')} |`).join('\n')
+  return (head.length ? head.join('\n') + '\n' : '') + body + '\n'
+}
+
+/** rows with the row at `from` moved to sit at `to` (indexes before the move). */
+const moveRow = (rows, from, to) => {
+  const out = rows.slice()
+  const [row] = out.splice(from, 1)
+  out.splice(to, 0, row)
+  return out
+}
+
 
 /** Data pushed through the write door: {columns, rows} | array | csv string. */
 const fromResource = resource => {
@@ -268,4 +302,4 @@ const sortRows = (columns, rows, sort) => {
   return sort.desc ? sorted.reverse() : sorted
 }
 
-module.exports = { parse, fromResource, toObjects, toCsv, sortRows, keyColumn, isNumeric, asNumber, DIRECTIVES }
+module.exports = { parse, serialize, moveRow, fromResource, toObjects, toCsv, sortRows, keyColumn, isNumeric, asNumber, DIRECTIVES }
