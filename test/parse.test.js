@@ -6,9 +6,9 @@ const require = createRequire(import.meta.url)
 const { parse, toObjects, toCsv, sortRows, keyColumn, fromResource } = require('../src/parse/parse.cjs')
 
 test('csv with quotes and directives', () => {
-  const t = parse('CAPTION Boards\nLAYOUT grid\nBoard,RAM,Note\nPi 4,"4 GB","cheap, cheerful"\nPi 5,8 GB,"says ""hi"""\n')
+  const t = parse('CAPTION Boards\nLAYOUT table\nBoard,RAM,Note\nPi 4,"4 GB","cheap, cheerful"\nPi 5,8 GB,"says ""hi"""\n')
   assert.equal(t.format, 'csv')
-  assert.deepEqual(t.directives, { caption: 'Boards', layout: 'grid' })
+  assert.deepEqual(t.directives, { caption: 'Boards', layout: 'table' })
   assert.deepEqual(t.columns, ['Board', 'RAM', 'Note'])
   assert.deepEqual(t.rows, [
     ['Pi 4', '4 GB', 'cheap, cheerful'],
@@ -141,4 +141,17 @@ test('serialize round-trips gfm, csv, tsv and json; moveRow moves one row', () =
   }
   assert.deepEqual(moveRow([1, 2, 3, 4], 0, 2), [2, 3, 1, 4])
   assert.deepEqual(moveRow([1, 2, 3, 4], 3, 1), [1, 4, 2, 3])
+})
+
+test('LAYOUT table is canonical, case-insensitive', () => {
+  const t = parse('LAYOUT Table\na,b\n1,2\n')
+  assert.equal(t.directives.layout, 'table')
+  assert.deepEqual(t.warnings, [])
+})
+
+test('LAYOUT grid is an alias for table and warns', () => {
+  const t = parse('LAYOUT grid\na,b\n1,2\n')
+  assert.equal(t.directives.layout, 'table')
+  assert.equal(t.warnings.length, 1)
+  assert.match(t.warnings[0], /say LAYOUT table/)
 })

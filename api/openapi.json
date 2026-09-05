@@ -14,7 +14,7 @@
           "slug": { "type": "string" },
           "title": { "type": "string" },
           "caption": { "type": ["string", "null"] },
-          "layout": { "type": "string", "description": "grid, stack or auto." },
+          "layout": { "type": "string", "description": "table, stack or auto (grid is an accepted alias for table)." },
           "columns": { "type": "array", "items": { "type": "string" } },
           "rows": { "type": "array", "items": { "type": "array", "items": { "type": "string" } }, "description": "Cells as strings, in column order." },
           "records": { "type": "array", "items": { "type": "object" }, "description": "The same rows as objects keyed by column, numbers coerced." },

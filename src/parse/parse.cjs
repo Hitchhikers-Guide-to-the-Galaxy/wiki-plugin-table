@@ -4,8 +4,9 @@
 //
 // A table item's text is:
 //
-//   [directive lines]      CAPTION …  LAYOUT grid|stack|auto  SORT col [desc]  KEY col  FOLD closed|open|none
-//                          FIT first|even  (grid: fit the panel instead of scrolling)
+//   [directive lines]      CAPTION …  LAYOUT table|stack|auto  SORT col [desc]  KEY col  FOLD closed|open|none
+//                          (LAYOUT grid is an alias for table; it warns)
+//                          FIT first|even  (table: fit the panel instead of scrolling)
 //                          REORDER [off]  (rows drag; the new order is written back to the text)
 //                          INDEX [heading]  (a counted first column, 1..n in display order)
 //   table source           GFM pipe table | CSV/TSV | JSON
@@ -16,7 +17,7 @@
 
 const DIRECTIVES = ['CAPTION', 'LAYOUT', 'SORT', 'KEY', 'FOLD', 'FIT', 'REORDER', 'INDEX']
 const FOLDS = ['closed', 'open', 'none']
-const LAYOUTS = ['grid', 'stack', 'auto']
+const LAYOUTS = ['table', 'stack', 'auto']
 const FITS = ['first', 'even']
 
 const splitLines = text => String(text || '').replace(/\r\n?/g, '\n').split('\n')
@@ -41,9 +42,13 @@ const takeDirectives = lines => {
         directives.caption = value.trim()
         break
       case 'LAYOUT': {
-        const v = value.trim().toLowerCase()
+        let v = value.trim().toLowerCase()
+        if (v === 'grid') {
+          v = 'table' // the old word for the plain table face
+          warnings.push('LAYOUT grid — say LAYOUT table')
+        }
         if (LAYOUTS.includes(v)) directives.layout = v
-        else warnings.push(`LAYOUT ${value.trim()} — expected grid, stack or auto`)
+        else warnings.push(`LAYOUT ${value.trim()} — expected table, stack or auto`)
         break
       }
       case 'SORT': {

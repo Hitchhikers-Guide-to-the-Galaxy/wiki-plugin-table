@@ -73,7 +73,7 @@ const hasLead = table => table.reorder || !!table.directives.index
 const layoutFor = table => {
   const l = table.directives.layout || 'auto'
   if (l !== 'auto') return l
-  return table.columns.length <= 3 ? 'grid' : 'stack'
+  return table.columns.length <= 3 ? 'table' : 'stack'
 }
 
 // ---------- rendering ------------------------------------------------------
