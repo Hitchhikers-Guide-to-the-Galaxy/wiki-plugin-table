@@ -4,7 +4,7 @@
 // context.internalLink.
 import parselib from '../parse/parse.cjs'
 const { toObjects } = parselib
-import { ago, stats, escape, markup, tableOf, layoutFor, gridHtml, stackHtml, bindReorder, reorderedText } from './core.js'
+import { ago, stats, escape, markup, tableOf, layoutFor, gridHtml, stackHtml, footHtml, bindReorder, reorderedText } from './core.js'
 
 const cssOnce = () => {
   const href = '/plugins/table/table.css?v=modern'
@@ -22,20 +22,17 @@ export function emit(el, item, context) {
   // the contract carries no owner flag yet: a column that can save gets grips
   const table = tableOf(item, { canWrite: !!context.save })
   const layout = layoutFor(table)
-  const caption = table.directives.caption ? `<div class="table-caption">${markup(table.directives.caption, resolve)}</div>` : ''
-  const warnings = table.warnings.length ? `<div class="table-warning">${table.warnings.map(escape).join('<br>')}</div>` : ''
   let body
   if (!table.columns.length) {
     body = `<p class="table-empty">${item.text && item.text.trim() ? 'no table found in this text' : 'empty table — double-click to add CSV, JSON or a markdown table'}</p>`
   } else {
-    body = layout === 'stack' ? stackHtml(table, resolve) : gridHtml(table, { resolve })
+    body = layout === 'list' ? stackHtml(table, resolve) : gridHtml(table, { resolve })
   }
   el.innerHTML = `
     <div class="table-item" data-layout="${layout}">
-      <div class="table-head">${caption}<button class="table-enlarge" title="enlarge">⤢</button></div>
-      ${warnings}
+      <button class="table-enlarge" title="enlarge">⤢</button>
       ${body}
-      <p class="caption">${escape(stats(item, table))}</p>
+      ${footHtml(item, table, resolve)}
     </div>`
   el.classList.add('table-source', 'data')
   el.tableData = () => ({ columns: table.columns.slice(), rows: table.rows.map(r => r.slice()) })

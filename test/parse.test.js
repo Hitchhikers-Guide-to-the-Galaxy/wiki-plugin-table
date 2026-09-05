@@ -155,3 +155,17 @@ test('LAYOUT grid is an alias for table and warns', () => {
   assert.equal(t.warnings.length, 1)
   assert.match(t.warnings[0], /say LAYOUT table/)
 })
+
+test('LAYOUT list is canonical; stack is an alias that warns', () => {
+  assert.equal(parse('LAYOUT list\na,b\n1,2\n').directives.layout, 'list')
+  const t = parse('LAYOUT stack\na,b\n1,2\n')
+  assert.equal(t.directives.layout, 'list')
+  assert.match(t.warnings[0], /say LAYOUT list/)
+})
+
+test('CAPTION off clears the caption and marks the footer off', () => {
+  const t = parse('CAPTION off\na,b\n1,2\n')
+  assert.equal(t.directives.caption, '')
+  assert.equal(t.directives.captionOff, true)
+  assert.equal(parse('CAPTION Offside\na,b\n1,2\n').directives.caption, 'Offside')
+})

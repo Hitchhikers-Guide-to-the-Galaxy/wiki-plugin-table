@@ -4,8 +4,9 @@
 //
 // A table item's text is:
 //
-//   [directive lines]      CAPTION …  LAYOUT table|stack|auto  SORT col [desc]  KEY col  FOLD closed|open|none
-//                          (LAYOUT grid is an alias for table; it warns)
+//   [directive lines]      CAPTION … | off  LAYOUT table|list|auto  SORT col [desc]  KEY col  FOLD closed|open|none
+//                          (LAYOUT grid and stack are the old words for table and list; they warn)
+//                          (CAPTION off hides the footer — caption and row count — unless there is a warning)
 //                          FIT first|even  (table: fit the panel instead of scrolling)
 //                          REORDER [off]  (rows drag; the new order is written back to the text)
 //                          INDEX [heading]  (a counted first column, 1..n in display order)
@@ -17,7 +18,8 @@
 
 const DIRECTIVES = ['CAPTION', 'LAYOUT', 'SORT', 'KEY', 'FOLD', 'FIT', 'REORDER', 'INDEX']
 const FOLDS = ['closed', 'open', 'none']
-const LAYOUTS = ['table', 'stack', 'auto']
+const LAYOUTS = ['table', 'list', 'auto']
+const LAYOUT_ALIASES = { grid: 'table', stack: 'list' } // the old words, still read, with a warning
 const FITS = ['first', 'even']
 
 const splitLines = text => String(text || '').replace(/\r\n?/g, '\n').split('\n')
@@ -39,16 +41,19 @@ const takeDirectives = lines => {
     const value = m[2] === undefined ? '' : m[2]
     switch (key) {
       case 'CAPTION':
-        directives.caption = value.trim()
+        if (/^off$/i.test(value.trim())) {
+          directives.caption = ''
+          directives.captionOff = true
+        } else directives.caption = value.trim()
         break
       case 'LAYOUT': {
         let v = value.trim().toLowerCase()
-        if (v === 'grid') {
-          v = 'table' // the old word for the plain table face
-          warnings.push('LAYOUT grid — say LAYOUT table')
+        if (LAYOUT_ALIASES[v]) {
+          warnings.push(`LAYOUT ${v} — say LAYOUT ${LAYOUT_ALIASES[v]}`)
+          v = LAYOUT_ALIASES[v]
         }
         if (LAYOUTS.includes(v)) directives.layout = v
-        else warnings.push(`LAYOUT ${value.trim()} — expected table, stack or auto`)
+        else warnings.push(`LAYOUT ${value.trim()} — expected table, list or auto`)
         break
       }
       case 'SORT': {

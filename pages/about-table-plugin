@@ -4,7 +4,7 @@
     {
       "type": "markdown",
       "id": "48167500a2ce35f9",
-      "text": "The **Table Plugin** puts a real table on a wiki page. Type CSV, TSV, a markdown pipe table or JSON into the item and it renders as a compact table when it is narrow, or as stacked row cards when it is wide, so six columns still read in the panel. The \u2922 button opens the whole table as a sortable table over the page. Double-click the item to edit its text. A live example of everything below is on [[Table Plugin Demo]], which ships with the plugin and opens from the \u2630 menu on any site."
+      "text": "The **Table Plugin** puts a real table on a wiki page. Type CSV, TSV, a markdown pipe table or JSON into the item and it renders as a compact table when it is narrow, or as a list of row cards when it is wide, so six columns still read in the panel. The \u2922 button opens the whole table as a sortable table over the page. Double-click the item to edit its text. A live example of everything below is on [[Table Plugin Demo]], which ships with the plugin and opens from the \u2630 menu on any site."
     },
     {
       "type": "table",
@@ -14,7 +14,7 @@
     {
       "type": "markdown",
       "id": "fa7e4b62da025aeb",
-      "text": "Wide tables stack. Each row becomes a card headed by the key column, so the table below \u2014 the one that prompted this plugin \u2014 reads top to bottom instead of squeezing six columns into four hundred pixels.\n\nCards fold. By default a stacked card shows only its key cell; the \u25b8 arrow (or a click on the title) opens the rest of the row, and shift-click opens or closes every card at once. Put a [[Wiki Link]] in the key cell and the folded list becomes a table of contents \u2014 the link opens the row's page in the lineup, the arrow opens the row in place. The `fedwiki-table-stack` skill rewrites a table into that shape and writes the row pages."
+      "text": "Wide tables become a list. Each row becomes a card headed by the key column, so the table below \u2014 the one that prompted this plugin \u2014 reads top to bottom instead of squeezing six columns into four hundred pixels.\n\nCards fold. By default a card in the list shows only its key cell; the \u25b8 arrow (or a click on the title) opens the rest of the row, and shift-click opens or closes every card at once. Put a [[Wiki Link]] in the key cell and the folded list becomes a table of contents \u2014 the link opens the row's page in the lineup, the arrow opens the row in place. The `fedwiki-table-stack` skill rewrites a table into that shape and writes the row pages."
     },
     {
       "type": "table",
@@ -39,7 +39,7 @@
     {
       "type": "markdown",
       "id": "84927ba44540cef0",
-      "text": "# DSL\n\nThe item text may begin with directive lines, one per line, uppercase keyword then value. Everything after them is the table.\n\n- **CAPTION** text \u2014 a heading over the table and the title of the enlarged view.\n- **LAYOUT** table | stack | auto \u2014 force a plain table, force row cards, or let width decide (table up to three columns). Default auto. The old word grid is still accepted as an alias for table, with a warning under the item asking for the new word.\n- **SORT** column [desc] \u2014 initial sort.\n- **KEY** column \u2014 which column heads each stacked card. Default: the first column that is not all numbers.\n- **FOLD** closed | open | none \u2014 stacked cards start folded to their key cell (default), start open, or draw no arrows and never fold.\n- **REORDER** \u2014 rows grow a \u283f grip and drag, but only for a reader who can save: the site owner in the wiki, a column that can save in the Sweet Client. Everyone else sees the table without handles. A drop rewrites the item text in the order you left it, journals an edit like any other, and redraws; SORT is ignored while REORDER is on, since only the typed order can be written back. Pushed data does not drag. Plain DOM drag and drop, no jQuery, the same code in the classic and the Sweet Client faces.\n- **INDEX** [heading] \u2014 a counted first column, 1 to n in display order, so a REORDER table reads as a numbered list that renumbers itself. The heading defaults to #. Grip and number share one narrow lead cell. The numbers are drawn, not stored: item.data and the CSV door carry the rows in order and nothing else.\n- **FIT** first | even \u2014 table layout only. By default a table sizes to its content and scrolls sideways inside the item. FIT makes it fill the panel exactly: *first* shrinks the first column to its widest cell and never wraps it, the rest sharing what is left; *even* gives every column an equal share. A bare FIT means first. A first column too wide to fit still scrolls rather than breaking the page.\n\nCells may hold [[Wiki Links]], external links in the wiki's square-bracket form, *italic* and **bold**. Nothing else is interpreted; HTML is escaped."
+      "text": "# DSL\n\nThe item text may begin with directive lines, one per line, uppercase keyword then value. Everything after them is the table.\n\n- **CAPTION** text \u2014 shown in the footer under the table, beside the row and column count, and used as the title of the enlarged view. **CAPTION off** hides the footer altogether; a warning still shows.\n- **LAYOUT** table | list | auto \u2014 force a plain table, force a list of row cards, or let width decide (table up to three columns). Default auto. The old words grid and stack are still accepted as aliases for table and list, with a warning under the item asking for the new word.\n- **SORT** column [desc] \u2014 initial sort.\n- **KEY** column \u2014 which column heads each card in list layout. Default: the first column that is not all numbers.\n- **FOLD** closed | open | none \u2014 list cards start folded to their key cell (default), start open, or draw no arrows and never fold.\n- **REORDER** \u2014 rows grow a \u283f grip and drag, but only for a reader who can save: the site owner in the wiki, a column that can save in the Sweet Client. Everyone else sees the table without handles. A drop rewrites the item text in the order you left it, journals an edit like any other, and redraws; SORT is ignored while REORDER is on, since only the typed order can be written back. Pushed data does not drag. Plain DOM drag and drop, no jQuery, the same code in the classic and the Sweet Client faces.\n- **INDEX** [heading] \u2014 a counted first column, 1 to n in display order, so a REORDER table reads as a numbered list that renumbers itself. The heading defaults to #. Grip and number share one narrow lead cell. The numbers are drawn, not stored: item.data and the CSV door carry the rows in order and nothing else.\n- **FIT** first | even \u2014 table layout only. By default a table sizes to its content and scrolls sideways inside the item. FIT makes it fill the panel exactly: *first* shrinks the first column to its widest cell and never wraps it, the rest sharing what is left; *even* gives every column an equal share. A bare FIT means first. A first column too wide to fit still scrolls rather than breaking the page.\n\nCells may hold [[Wiki Links]], external links in the wiki's square-bracket form, *italic* and **bold**. Nothing else is interpreted; HTML is escaped."
     },
     {
       "type": "markdown",
@@ -49,7 +49,7 @@
     {
       "type": "table",
       "id": "0d5f9d28651cb29d",
-      "text": "CAPTION FIT first \u2014 the label column never wraps\nLAYOUT table\nFIT\n\n| Directive | What it does | When to reach for it |\n|---|---|---|\n| FIT | fills the panel | a narrow table that almost fits |\n| LAYOUT | table or cards | prose cells read better as cards |\n| KEY | heads each card | stack mode only |"
+      "text": "CAPTION FIT first \u2014 the label column never wraps\nLAYOUT table\nFIT\n\n| Directive | What it does | When to reach for it |\n|---|---|---|\n| FIT | fills the panel | a narrow table that almost fits |\n| LAYOUT | table or cards | prose cells read better as cards |\n| KEY | heads each card | list layout only |"
     },
     {
       "type": "markdown",
@@ -292,6 +292,50 @@
       },
       "date": 1788615238581,
       "provenance": "link the shipped demo page"
+    },
+    {
+      "type": "edit",
+      "id": "48167500a2ce35f9",
+      "item": {
+        "type": "markdown",
+        "id": "48167500a2ce35f9",
+        "text": "The **Table Plugin** puts a real table on a wiki page. Type CSV, TSV, a markdown pipe table or JSON into the item and it renders as a compact table when it is narrow, or as a list of row cards when it is wide, so six columns still read in the panel. The \u2922 button opens the whole table as a sortable table over the page. Double-click the item to edit its text. A live example of everything below is on [[Table Plugin Demo]], which ships with the plugin and opens from the \u2630 menu on any site."
+      },
+      "date": 1788617229808,
+      "provenance": "0.8.0: LAYOUT list (stack is a warned alias), footer carries caption, count and warnings"
+    },
+    {
+      "type": "edit",
+      "id": "fa7e4b62da025aeb",
+      "item": {
+        "type": "markdown",
+        "id": "fa7e4b62da025aeb",
+        "text": "Wide tables become a list. Each row becomes a card headed by the key column, so the table below \u2014 the one that prompted this plugin \u2014 reads top to bottom instead of squeezing six columns into four hundred pixels.\n\nCards fold. By default a card in the list shows only its key cell; the \u25b8 arrow (or a click on the title) opens the rest of the row, and shift-click opens or closes every card at once. Put a [[Wiki Link]] in the key cell and the folded list becomes a table of contents \u2014 the link opens the row's page in the lineup, the arrow opens the row in place. The `fedwiki-table-stack` skill rewrites a table into that shape and writes the row pages."
+      },
+      "date": 1788617229808,
+      "provenance": "0.8.0: LAYOUT list (stack is a warned alias), footer carries caption, count and warnings"
+    },
+    {
+      "type": "edit",
+      "id": "84927ba44540cef0",
+      "item": {
+        "type": "markdown",
+        "id": "84927ba44540cef0",
+        "text": "# DSL\n\nThe item text may begin with directive lines, one per line, uppercase keyword then value. Everything after them is the table.\n\n- **CAPTION** text \u2014 shown in the footer under the table, beside the row and column count, and used as the title of the enlarged view. **CAPTION off** hides the footer altogether; a warning still shows.\n- **LAYOUT** table | list | auto \u2014 force a plain table, force a list of row cards, or let width decide (table up to three columns). Default auto. The old words grid and stack are still accepted as aliases for table and list, with a warning under the item asking for the new word.\n- **SORT** column [desc] \u2014 initial sort.\n- **KEY** column \u2014 which column heads each card in list layout. Default: the first column that is not all numbers.\n- **FOLD** closed | open | none \u2014 list cards start folded to their key cell (default), start open, or draw no arrows and never fold.\n- **REORDER** \u2014 rows grow a \u283f grip and drag, but only for a reader who can save: the site owner in the wiki, a column that can save in the Sweet Client. Everyone else sees the table without handles. A drop rewrites the item text in the order you left it, journals an edit like any other, and redraws; SORT is ignored while REORDER is on, since only the typed order can be written back. Pushed data does not drag. Plain DOM drag and drop, no jQuery, the same code in the classic and the Sweet Client faces.\n- **INDEX** [heading] \u2014 a counted first column, 1 to n in display order, so a REORDER table reads as a numbered list that renumbers itself. The heading defaults to #. Grip and number share one narrow lead cell. The numbers are drawn, not stored: item.data and the CSV door carry the rows in order and nothing else.\n- **FIT** first | even \u2014 table layout only. By default a table sizes to its content and scrolls sideways inside the item. FIT makes it fill the panel exactly: *first* shrinks the first column to its widest cell and never wraps it, the rest sharing what is left; *even* gives every column an equal share. A bare FIT means first. A first column too wide to fit still scrolls rather than breaking the page.\n\nCells may hold [[Wiki Links]], external links in the wiki's square-bracket form, *italic* and **bold**. Nothing else is interpreted; HTML is escaped."
+      },
+      "date": 1788617229808,
+      "provenance": "0.8.0: LAYOUT list (stack is a warned alias), footer carries caption, count and warnings"
+    },
+    {
+      "type": "edit",
+      "id": "0d5f9d28651cb29d",
+      "item": {
+        "type": "table",
+        "id": "0d5f9d28651cb29d",
+        "text": "CAPTION FIT first \u2014 the label column never wraps\nLAYOUT table\nFIT\n\n| Directive | What it does | When to reach for it |\n|---|---|---|\n| FIT | fills the panel | a narrow table that almost fits |\n| LAYOUT | table or cards | prose cells read better as cards |\n| KEY | heads each card | list layout only |"
+      },
+      "date": 1788617229808,
+      "provenance": "0.8.0: LAYOUT list (stack is a warned alias), footer carries caption, count and warnings"
     }
   ],
   "plugin": "table"

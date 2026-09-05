@@ -2,7 +2,7 @@
 // Core rendering lives in core.js, shared with the modern module.
 import parselib from '../parse/parse.cjs'
 const { parse, fromResource, toObjects, sortRows, keyColumn } = parselib
-import { ago, stats, escape, emphasis, markup, tableOf, layoutFor, gridHtml, stackHtml, bindReorder, reorderedText } from './core.js'
+import { ago, stats, escape, emphasis, markup, tableOf, layoutFor, gridHtml, stackHtml, footHtml, bindReorder, reorderedText } from './core.js'
 // The wiki fetches plugin scripts with a cache-buster but a stylesheet <link>
 // is cached by the browser, so stamp the version on it: a new release must
 // bring its own CSS or fold arrows render with last release's layout.
@@ -20,20 +20,17 @@ const emit = ($item, item) => {
   cssOnce()
   const table = tableOf(item, { canWrite: canWrite() })
   const layout = layoutFor(table)
-  const caption = table.directives.caption ? `<div class="table-caption">${markup(table.directives.caption)}</div>` : ''
-  const warnings = table.warnings.length ? `<div class="table-warning">${table.warnings.map(escape).join('<br>')}</div>` : ''
   let body
   if (!table.columns.length) {
     body = `<p class="table-empty">${item.text && item.text.trim() ? 'no table found in this text' : 'empty table — double-click to add CSV, JSON or a markdown table'}</p>`
   } else {
-    body = layout === 'stack' ? stackHtml(table) : gridHtml(table)
+    body = layout === 'list' ? stackHtml(table) : gridHtml(table)
   }
   $item.append(`
     <div class="table-item" data-layout="${layout}">
-      <div class="table-head">${caption}<button class="table-enlarge" title="enlarge">⤢</button></div>
-      ${warnings}
+      <button class="table-enlarge" title="enlarge">⤢</button>
       ${body}
-      <p class="caption">${escape(stats(item, table))}</p>
+      ${footHtml(item, table)}
     </div>`)
 
   // ---- data interface -----------------------------------------------------
@@ -140,4 +137,4 @@ if (typeof window !== 'undefined') {
 }
 
 export { emit, bind }
-export { ago, stats, tableOf, layoutFor, markup, gridHtml, stackHtml } from './core.js'
+export { ago, stats, tableOf, layoutFor, markup, gridHtml, stackHtml, footHtml } from './core.js'

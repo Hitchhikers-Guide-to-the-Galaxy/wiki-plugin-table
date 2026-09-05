@@ -2,7 +2,7 @@
 
 This plugin, type: `table`, extends the markup of the federated wiki with a
 first-class table item: type CSV, TSV, a markdown pipe table or JSON into the
-item and it renders as a compact table (narrow data) or stacked row cards (wide
+item and it renders as a compact table (narrow data) or a list of row cards (wide
 data), enlarges to a sortable table over the page, exposes its data to other
 plugins in the lineup, and answers over REST and MCP.
 

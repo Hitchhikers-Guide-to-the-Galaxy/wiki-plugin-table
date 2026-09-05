@@ -73,7 +73,18 @@ const hasLead = table => table.reorder || !!table.directives.index
 const layoutFor = table => {
   const l = table.directives.layout || 'auto'
   if (l !== 'auto') return l
-  return table.columns.length <= 3 ? 'table' : 'stack'
+  return table.columns.length <= 3 ? 'table' : 'list'
+}
+
+// the footer: caption and row count on one centred line, warnings in red below.
+// CAPTION off hides the line; warnings always show.
+const footHtml = (item, table, resolve = null) => {
+  const d = table.directives
+  const warn = table.warnings.map(w => `<div class="table-warning">${escape(w)}</div>`).join('')
+  const status = d.captionOff || !table.columns.length
+    ? ''
+    : `<div class="table-status">${d.caption ? `<span class="table-caption">${markup(d.caption, resolve)}</span> · ` : ''}${escape(stats(item, table))}</div>`
+  return status || warn ? `<div class="table-foot">${status}${warn}</div>` : ''
 }
 
 // ---------- rendering ------------------------------------------------------
@@ -98,7 +109,7 @@ const gridHtml = (table, { sortable = false, sortState = null, resolve = null } 
   return `<div class="table-scroll"><table class="table-grid${fit}"><thead><tr>${lead}${th}</tr></thead><tbody>${body}</tbody></table></div>`
 }
 
-// stack: one card per row. Cards fold to their key cell (FOLD closed, the
+// list (class table-stack): one card per row. Cards fold to their key cell (FOLD closed, the
 // default) so a long table reads as a list of titles; ▸ opens one card,
 // shift-click opens or closes them all; FOLD open starts unfolded, FOLD none
 // draws no arrows at all. The key cell may be a [[link]] — the link opens the
@@ -175,4 +186,4 @@ const reorderedText = (text, from, to) => {
   return serialize({ ...t, rows: moveRow(t.rows, from, to) })
 }
 
-export { ago, stats, escape, emphasis, markup, tableOf, layoutFor, gridHtml, stackHtml, bindReorder, reorderedText }
+export { ago, stats, escape, emphasis, markup, tableOf, layoutFor, gridHtml, stackHtml, footHtml, bindReorder, reorderedText }

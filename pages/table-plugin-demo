@@ -5,7 +5,7 @@
     {
       "type": "markdown",
       "id": "f5735840df055b15",
-      "text": "A live demo of the Table Plugin: a narrow CSV table, a wide table as stacked row cards, JSON, a line chart reading the table above it, sorting, FIT, REORDER and INDEX, and the grid alias. Press the enlarge button on any table for the sortable view; double-click to edit."
+      "text": "A live demo of the Table Plugin: a narrow CSV table, a wide table as a list of row cards, JSON, a line chart reading the table above it, sorting, FIT, REORDER and INDEX, the footer, and the old words grid and stack as aliases. Press the enlarge button on any table for the sortable view; double-click to edit."
     },
     {
       "type": "markdown",
@@ -49,7 +49,7 @@
     {
       "type": "markdown",
       "id": "1fefc3f4aeef1604",
-      "text": "The ranked research strands from [[Six Voices Plan]], six columns wide, stacked because it is wider than three columns."
+      "text": "The ranked research strands from [[Six Voices Plan]], six columns wide, drawn as a list of cards because it is wider than three columns."
     },
     {
       "type": "table",
@@ -104,7 +104,7 @@
     {
       "type": "markdown",
       "id": "e90b59dc4b7f9ebf",
-      "text": "The same seven-column table left to stack (auto), with KEY choosing which column heads each card. This is a real page from the Pi lab, [[Old Pis Are Weak Performers]]."
+      "text": "The same seven-column table left to auto, which lists it, with KEY choosing which column heads each card. This is a real page from the Pi lab, [[Old Pis Are Weak Performers]]."
     },
     {
       "type": "table",
@@ -124,12 +124,12 @@
     {
       "type": "markdown",
       "id": "136f85695c5a2af8",
-      "text": "The same directives on stacked cards: the grip sits before the fold arrow, and INDEX Rank names the heading."
+      "text": "The same directives on list cards: the grip sits before the fold arrow, and INDEX Rank names the heading."
     },
     {
       "type": "table",
       "id": "74cb783c737e9698",
-      "text": "CAPTION Ranked strands\nLAYOUT stack\nREORDER\nINDEX Rank\nFOLD closed\n| Strand | Time to evidence | Judgement |\n| --- | --- | --- |\n| Agent score | weeks | do first |\n| Musical intention | months | second |\n| Improvisation scores | reading only | alongside |\n"
+      "text": "CAPTION Ranked strands\nLAYOUT list\nREORDER\nINDEX Rank\nFOLD closed\n| Strand | Time to evidence | Judgement |\n| --- | --- | --- |\n| Agent score | weeks | do first |\n| Musical intention | months | second |\n| Improvisation scores | reading only | alongside |\n"
     },
     {
       "type": "markdown",
@@ -144,17 +144,37 @@
     {
       "type": "markdown",
       "id": "20990cfbbe9f9f78",
-      "text": "# Grid is an alias"
+      "text": "# Old words are aliases"
     },
     {
       "type": "markdown",
       "id": "7fd9d2d57e738e81",
-      "text": "Since 0.7.0 the plain face is **LAYOUT table**. The old word still works: this item says `LAYOUT grid` on purpose and renders as a table, with the plugin's warning under it asking for the new word. Old pages keep working; new pages should say table."
+      "text": "Since 0.7.0 the plain face is **LAYOUT table** and since 0.8.0 the cards are **LAYOUT list**. The old words still work: these two items say `LAYOUT grid` and `LAYOUT stack` on purpose and render as before, with the plugin's warning under each asking for the new word. Old pages keep working; new pages should say table and list."
     },
     {
       "type": "table",
       "id": "4d4b7ca4ebce7453",
-      "text": "CAPTION Written the old way\nLAYOUT grid\n\n| Word | Face |\n|---|---|\n| table | plain table, the new word |\n| grid | the same face, with a warning |\n| stack | row cards |"
+      "text": "CAPTION Written the old way\nLAYOUT grid\n\n| Word | Face |\n|---|---|\n| table | plain table, the new word |\n| grid | the same face, with a warning |\n| list | row cards, the new word |\n| stack | the same cards, with a warning |"
+    },
+    {
+      "type": "table",
+      "id": "b2e55ad439221d1f",
+      "text": "CAPTION Written the old way too\nLAYOUT stack\nKEY Word\nFOLD none\n\n| Word | Face |\n|---|---|\n| list | one card per row |\n| stack | the old word, still read |"
+    },
+    {
+      "type": "markdown",
+      "id": "60931929df018a53",
+      "text": "# The footer"
+    },
+    {
+      "type": "markdown",
+      "id": "d5aa671c53d6454a",
+      "text": "Every table ends with one status line: the CAPTION, then the row and column count, and anything that needed a warning in red beneath. `CAPTION off` switches the line off; a warning still shows. Below, the same three rows with the footer off."
+    },
+    {
+      "type": "table",
+      "id": "5f2ac92320ac445d",
+      "text": "CAPTION off\n\n| Board | RAM |\n|---|---|\n| Pi 4 | 4 GB |\n| Pi 5 | 8 GB |\n| Pi Zero 2 W | 512 MB |"
     },
     {
       "type": "markdown",
@@ -342,6 +362,142 @@
       },
       "date": 1788615672166,
       "provenance": "explain the line item"
+    },
+    {
+      "type": "edit",
+      "id": "f5735840df055b15",
+      "item": {
+        "type": "markdown",
+        "id": "f5735840df055b15",
+        "text": "A live demo of the Table Plugin: a narrow CSV table, a wide table as a list of row cards, JSON, a line chart reading the table above it, sorting, FIT, REORDER and INDEX, the footer, and the old words grid and stack as aliases. Press the enlarge button on any table for the sortable view; double-click to edit."
+      },
+      "date": 1788617229810,
+      "provenance": "0.8.0: LAYOUT list (stack is a warned alias), footer carries caption, count and warnings"
+    },
+    {
+      "type": "edit",
+      "id": "1fefc3f4aeef1604",
+      "item": {
+        "type": "markdown",
+        "id": "1fefc3f4aeef1604",
+        "text": "The ranked research strands from [[Six Voices Plan]], six columns wide, drawn as a list of cards because it is wider than three columns."
+      },
+      "date": 1788617229810,
+      "provenance": "0.8.0: LAYOUT list (stack is a warned alias), footer carries caption, count and warnings"
+    },
+    {
+      "type": "edit",
+      "id": "e90b59dc4b7f9ebf",
+      "item": {
+        "type": "markdown",
+        "id": "e90b59dc4b7f9ebf",
+        "text": "The same seven-column table left to auto, which lists it, with KEY choosing which column heads each card. This is a real page from the Pi lab, [[Old Pis Are Weak Performers]]."
+      },
+      "date": 1788617229810,
+      "provenance": "0.8.0: LAYOUT list (stack is a warned alias), footer carries caption, count and warnings"
+    },
+    {
+      "type": "edit",
+      "id": "136f85695c5a2af8",
+      "item": {
+        "type": "markdown",
+        "id": "136f85695c5a2af8",
+        "text": "The same directives on list cards: the grip sits before the fold arrow, and INDEX Rank names the heading."
+      },
+      "date": 1788617229810,
+      "provenance": "0.8.0: LAYOUT list (stack is a warned alias), footer carries caption, count and warnings"
+    },
+    {
+      "type": "edit",
+      "id": "74cb783c737e9698",
+      "item": {
+        "type": "table",
+        "id": "74cb783c737e9698",
+        "text": "CAPTION Ranked strands\nLAYOUT list\nREORDER\nINDEX Rank\nFOLD closed\n| Strand | Time to evidence | Judgement |\n| --- | --- | --- |\n| Agent score | weeks | do first |\n| Musical intention | months | second |\n| Improvisation scores | reading only | alongside |\n"
+      },
+      "date": 1788617229810,
+      "provenance": "0.8.0: LAYOUT list (stack is a warned alias), footer carries caption, count and warnings"
+    },
+    {
+      "type": "edit",
+      "id": "4d4b7ca4ebce7453",
+      "item": {
+        "type": "table",
+        "id": "4d4b7ca4ebce7453",
+        "text": "CAPTION Written the old way\nLAYOUT grid\n\n| Word | Face |\n|---|---|\n| table | plain table, the new word |\n| grid | the same face, with a warning |\n| list | row cards, the new word |\n| stack | the same cards, with a warning |"
+      },
+      "date": 1788617229810,
+      "provenance": "0.8.0: LAYOUT list (stack is a warned alias), footer carries caption, count and warnings"
+    },
+    {
+      "type": "add",
+      "id": "b2e55ad439221d1f",
+      "item": {
+        "type": "table",
+        "id": "b2e55ad439221d1f",
+        "text": "CAPTION Written the old way too\nLAYOUT stack\nKEY Word\nFOLD none\n\n| Word | Face |\n|---|---|\n| list | one card per row |\n| stack | the old word, still read |"
+      },
+      "after": "4d4b7ca4ebce7453",
+      "date": 1788617229810,
+      "provenance": "0.8.0: LAYOUT list (stack is a warned alias), footer carries caption, count and warnings"
+    },
+    {
+      "type": "add",
+      "id": "60931929df018a53",
+      "item": {
+        "type": "markdown",
+        "id": "60931929df018a53",
+        "text": "# The footer"
+      },
+      "after": "b2e55ad439221d1f",
+      "date": 1788617229810,
+      "provenance": "0.8.0: LAYOUT list (stack is a warned alias), footer carries caption, count and warnings"
+    },
+    {
+      "type": "add",
+      "id": "d5aa671c53d6454a",
+      "item": {
+        "type": "markdown",
+        "id": "d5aa671c53d6454a",
+        "text": "Every table ends with one status line: the CAPTION, then the row and column count, and anything that needed a warning in red beneath. `CAPTION off` switches the line off; a warning still shows. Below, the same three rows with the footer off."
+      },
+      "after": "60931929df018a53",
+      "date": 1788617229810,
+      "provenance": "0.8.0: LAYOUT list (stack is a warned alias), footer carries caption, count and warnings"
+    },
+    {
+      "type": "add",
+      "id": "5f2ac92320ac445d",
+      "item": {
+        "type": "table",
+        "id": "5f2ac92320ac445d",
+        "text": "CAPTION off\n\n| Board | RAM |\n|---|---|\n| Pi 4 | 4 GB |\n| Pi 5 | 8 GB |\n| Pi Zero 2 W | 512 MB |"
+      },
+      "after": "d5aa671c53d6454a",
+      "date": 1788617229810,
+      "provenance": "0.8.0: LAYOUT list (stack is a warned alias), footer carries caption, count and warnings"
+    },
+    {
+      "type": "edit",
+      "id": "20990cfbbe9f9f78",
+      "item": {
+        "type": "markdown",
+        "id": "20990cfbbe9f9f78",
+        "text": "# Old words are aliases"
+      },
+      "date": 1788617229811,
+      "provenance": "0.8.0: LAYOUT list (stack is a warned alias), footer carries caption, count and warnings"
+    },
+    {
+      "type": "edit",
+      "id": "7fd9d2d57e738e81",
+      "item": {
+        "type": "markdown",
+        "id": "7fd9d2d57e738e81",
+        "text": "Since 0.7.0 the plain face is **LAYOUT table** and since 0.8.0 the cards are **LAYOUT list**. The old words still work: these two items say `LAYOUT grid` and `LAYOUT stack` on purpose and render as before, with the plugin's warning under each asking for the new word. Old pages keep working; new pages should say table and list."
+      },
+      "date": 1788617229811,
+      "provenance": "0.8.0: LAYOUT list (stack is a warned alias), footer carries caption, count and warnings"
     }
   ]
 }

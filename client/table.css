@@ -6,19 +6,18 @@
   float: none; width: auto; margin: 0 0 1em 0; padding: 0; background: transparent; overflow: visible;
 }
 .item.table-source.data p { text-align: left; color: inherit; }
-.item.table-source.data p.caption { text-align: center; color: gray; }
 
 .item.table-source .table-item { position: relative; font-size: 13px; line-height: 1.35; }
-.item.table-source .table-head { display: flex; align-items: baseline; justify-content: space-between; min-height: 1.4em; }
-.item.table-source .table-caption { font-weight: bold; margin: 0 0 4px 0; }
 .item.table-source .table-enlarge {
-  margin-left: auto; border: 1px solid #ccc; background: #f6f6f6; color: #666; border-radius: 3px;
-  font-size: 12px; line-height: 1; padding: 2px 5px; cursor: pointer; opacity: 0.55;
+  position: absolute; top: 0; right: 0; z-index: 2; border: 1px solid #ccc; background: #f6f6f6; color: #666; border-radius: 3px;
+  font-size: 12px; line-height: 1; padding: 2px 5px; cursor: pointer; opacity: 0.45;
 }
 .item.table-source:hover .table-enlarge { opacity: 1; }
-.item.table-source .table-warning { color: #a55; font-size: 12px; margin: 2px 0 6px; }
+/* the footer: one status line (CAPTION · rows × cols), warnings in red beneath; CAPTION off hides the line */
+.item.table-source .table-foot { text-align: center; color: gray; font-size: 12px; margin-top: 6px; }
+.item.table-source .table-foot .table-caption { font-weight: bold; color: #555; }
+.item.table-source .table-foot .table-warning { color: #a55; margin-top: 2px; }
 .item.table-source .table-empty { color: #888; font-style: italic; }
-.item.table-source p.caption { margin-top: 6px; }
 
 /* LAYOUT table (class table-grid): a real table, scrolls sideways inside the item, never widens the page */
 .table-scroll { overflow-x: auto; max-width: 100%; }
@@ -50,7 +49,7 @@ table.table-grid.fit-even th { white-space: normal; }
 table.table-grid th.sortable { cursor: pointer; }
 table.table-grid th.sortable:hover { background: #e8e8e8; }
 
-/* stack: one card per row, first/key column as the heading; cards fold to it */
+/* LAYOUT list (class table-stack): one card per row, first/key column as the heading; cards fold to it */
 .table-stack .row-card { border: 1px solid #ddd; border-radius: 4px; padding: 5px 8px; margin: 0 0 4px 0; background: #fbfbfb; }
 .table-stack .row-key { font-weight: normal; cursor: default; }  /* the [[link]] carries the emphasis */
 .table-stack[data-fold="closed"] .row-key, .table-stack[data-fold="open"] .row-key { cursor: pointer; }

@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""layout-grid-to-table.py — rewrite `LAYOUT grid` to `LAYOUT table` in table items.
+"""layout-grid-to-table.py — rewrite an old LAYOUT word to its new one in table items.
+
+Default grid → table (0.7.0); `--from stack --to list` for 0.8.0.
 
 wiki-plugin-table 0.7.0 renamed the plain-table layout word; `grid` still works
 as a warned alias. This walks a farm root (or one site), edits the directive
@@ -25,12 +27,13 @@ except ImportError:
     fw = None  # inlined mode: the caller has already exec'd fedwiki.py into globals
     fw = sys.modules.get('fedwiki')
 
-GRID = re.compile(r'^(\s*)LAYOUT\s+grid\s*$', re.I | re.M)
-PROVENANCE = 'layout-grid-to-table 0.7.0'
+GRID = None      # set in main from --from
+TO = 'table'
+PROVENANCE = 'layout-grid-to-table'
 
 
 def rewrite(text):
-    return GRID.sub(r'\1LAYOUT table', text)
+    return GRID.sub(lambda m: f'{m.group(1)}LAYOUT {TO}', text)
 
 
 def fix_page(path, dry, stamp):
@@ -71,7 +74,13 @@ def main():
     ap.add_argument('--root')
     ap.add_argument('--site')
     ap.add_argument('--dry-run', action='store_true')
+    ap.add_argument('--from', dest='old', default='grid')
+    ap.add_argument('--to', dest='new', default='table')
     a = ap.parse_args()
+    global GRID, TO, PROVENANCE
+    GRID = re.compile(r'^(\s*)LAYOUT\s+' + re.escape(a.old) + r'\s*$', re.I | re.M)
+    TO = a.new
+    PROVENANCE = f'layout-grid-to-table: LAYOUT {a.old} -> {a.new}'
     if not (a.root or a.site):
         ap.error('give --root or --site')
     stamp = time.strftime('%Y%m%d%H%M')
