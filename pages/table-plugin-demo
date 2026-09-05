@@ -1,0 +1,336 @@
+{
+  "title": "Table Plugin Demo",
+  "plugin": "table",
+  "story": [
+    {
+      "type": "markdown",
+      "id": "f5735840df055b15",
+      "text": "A live demo of the Table Plugin: a narrow CSV table, a wide table as stacked row cards, JSON, a line chart reading the table above it, sorting, FIT, REORDER and INDEX, and the grid alias. Press the enlarge button on any table for the sortable view; double-click to edit."
+    },
+    {
+      "type": "markdown",
+      "id": "40d065f7ab7b20ee",
+      "text": "This page ships inside wiki-plugin-table and is served on every site of a farm that installs it. It was generated through a dialogue between [[David Bovill]] and [[Claude Code]]. See [[About Table Plugin]] for the DSL and [[About Table API Keys]] for the write door."
+    },
+    {
+      "type": "table",
+      "id": "9f309ee104ad281a",
+      "text": "CAPTION Boards on the bench\nBoard,RAM,Good for\nPi 4,4 GB,gadget mode and video\nPi 5,8 GB,the farm and Marvin\nPi Zero 2 W,512 MB,sensors",
+      "resource": {
+        "columns": [
+          "Board",
+          "RAM",
+          "Good for"
+        ],
+        "rows": [
+          [
+            "Pi 4",
+            "4 GB",
+            "pushed as csv"
+          ],
+          [
+            "Pi 5",
+            "8 GB",
+            "the farm and Marvin"
+          ],
+          [
+            "Pi Zero 2 W",
+            "512 MB",
+            "sensors"
+          ]
+        ]
+      },
+      "slug": "table-plugin-demo",
+      "writes": 2,
+      "writer": "laptop-demo",
+      "written": 1786975374219,
+      "interval": 1035
+    },
+    {
+      "type": "markdown",
+      "id": "1fefc3f4aeef1604",
+      "text": "The ranked research strands from [[Six Voices Plan]], six columns wide, stacked because it is wider than three columns."
+    },
+    {
+      "type": "table",
+      "id": "c197dc86ead2e7d4",
+      "text": "CAPTION The ranked research strands\n| # | Strand | Time to evidence | Reversible | Needs | Judgement |\n|---|---|---|---|---|---|\n| 1 | [[Agent Score]] \u2014 a score read by a human, an agent and OSC | weeks: the tabletop tests it directly | yes | the ensemble | do first; it is what the build needs |\n| 2 | [[Musical Intention]] \u2014 minimum representation of an intention | weeks\u2013months | yes | reading + two embassies | second; the rain event is its first test case |\n| 3 | [[Improvisation Score]]s \u2014 event, graphic, text scores, conduction | reading only | yes | a library | run alongside 1 as reading |\n| 4 | [[Laban Notation]] \u2014 effort/flow/weight as gesture primitives | months, uncertain payoff | yes | a dance-literate reader | last; learn from it, do not adopt it |"
+    },
+    {
+      "type": "markdown",
+      "id": "948a5fafbdfc592a",
+      "text": "The same item accepts JSON \u2014 here an object with columns and rows."
+    },
+    {
+      "type": "table",
+      "id": "6e9433dbb78b99a5",
+      "text": "{\n  \"columns\": [\n    \"voice\",\n    \"role\",\n    \"instrument\"\n  ],\n  \"rows\": [\n    [\n      \"Marvin\",\n      \"host\",\n      \"speech\"\n    ],\n    [\n      \"Matt\",\n      \"reader\",\n      \"radio\"\n    ],\n    [\n      \"Laura\",\n      \"scribe\",\n      \"wiki\"\n    ]\n  ]\n}"
+    },
+    {
+      "type": "markdown",
+      "id": "f956d9be1c12120e",
+      "text": "# Data interface\n\nA price table, then a line item under it. The line plugin asks wiki.getData for the nearest data item above it and finds this table \u2014 the same way it would find a [[Data Plugin]] item."
+    },
+    {
+      "type": "table",
+      "id": "9e44ab1f3f399f58",
+      "text": "CAPTION Prices\nDate,Price\n2026-08-10,3.2\n2026-08-11,3.9\n2026-08-12,3.5\n2026-08-13,4.4\n2026-08-14,4.1\n2026-08-15,4.8\n2026-08-16,5.2\n"
+    },
+    {
+      "type": "line",
+      "id": "98964cea0e946dac",
+      "text": "Prices from the table above"
+    },
+    {
+      "type": "markdown",
+      "id": "728583ea30ebfceb",
+      "text": "# More shapes\n\nTab-separated with an initial sort \u2014 the SORT directive orders rows before they render; the \u2922 view lets a reader re-sort by any column."
+    },
+    {
+      "type": "table",
+      "id": "cbd0d56b4cd252d8",
+      "text": "CAPTION Voices by latency\nSORT latency ms\nvoice\tengine\tlatency ms\nMarvin\tPiper\t180\nMatt\tespeak\t40\nLaura\tCoqui\t650\nDeep Thought\tKokoro\t320"
+    },
+    {
+      "type": "markdown",
+      "id": "0d5965c58d81f7eb",
+      "text": "A wide table forced to LAYOUT table scrolls sideways inside the item instead of stacking \u2014 the page never widens."
+    },
+    {
+      "type": "table",
+      "id": "f1174087f3836a94",
+      "text": "LAYOUT table\n| Board | CPU | RAM | OS | Audio out | Good for | Not for |\n|---|---|---|---|---|---|---|\n| Pi 1 B+ | 1\u00d7700 MHz | 512 MB | Bookworm Lite | 3.5 mm jack | a single sound source, OSC receiver | any browser, any speech model |\n| Pi 2 B | 4\u00d7900 MHz | 1 GB | Bookworm Lite | 3.5 mm jack | OSC + a small sampler | speech synthesis in real time |\n| Pi 3 B | 4\u00d71.2 GHz | 1 GB | Bookworm | jack + HDMI | Piper voice at a stretch | Whisper |\n| Pi 4 | 4\u00d71.5 GHz | 4 GB | Bookworm | HDMI, USB | a voice, video gadget | large models |\n| Pi 5 | 4\u00d72.4 GHz | 8 GB | Bookworm | HDMI, USB | the farm, Marvin, Whisper base | GPU work |"
+    },
+    {
+      "type": "markdown",
+      "id": "e90b59dc4b7f9ebf",
+      "text": "The same seven-column table left to stack (auto), with KEY choosing which column heads each card. This is a real page from the Pi lab, [[Old Pis Are Weak Performers]]."
+    },
+    {
+      "type": "table",
+      "id": "8a3e0789ac97db03",
+      "text": "KEY Good for\nCAPTION Old Pis are weak performers\n| Board | CPU | RAM | OS | Audio out | Good for | Not for |\n|---|---|---|---|---|---|---|\n| Pi 1 B+ | 1\u00d7700 MHz | 512 MB | Bookworm Lite | 3.5 mm jack | a single sound source, OSC receiver | any browser, any speech model |\n| Pi 2 B | 4\u00d7900 MHz | 1 GB | Bookworm Lite | 3.5 mm jack | OSC + a small sampler | speech synthesis in real time |\n| Pi 3 B | 4\u00d71.2 GHz | 1 GB | Bookworm | jack + HDMI | Piper voice at a stretch | Whisper |\n| Pi 4 | 4\u00d71.5 GHz | 4 GB | Bookworm | HDMI, USB | a voice, video gadget | large models |\n| Pi 5 | 4\u00d72.4 GHz | 8 GB | Bookworm | HDMI, USB | the farm, Marvin, Whisper base | GPU work |"
+    },
+    {
+      "type": "markdown",
+      "id": "f3c935210f7e7063",
+      "text": "# Reorder and index\n\nA numbered list you can drag. **INDEX** draws the count, **REORDER** grows a \u283f grip on every row for the site owner (readers see numbers only). Drop a row and the item text is rewritten in that order, journaled like any edit, and the numbers follow."
+    },
+    {
+      "type": "table",
+      "id": "c60855aa6c220028",
+      "text": "CAPTION Running order\nLAYOUT table\nREORDER\nINDEX\n| Act | Length | Note |\n| --- | --- | --- |\n| [[Marvin]] opens | 3 min | dry |\n| Station ident | 20 s | the jingle |\n| [[Matt Kuderski]] reads | 8 min | live |\n| Listener letters | 5 min | pre-recorded |\n| Close | 1 min | credits |\n"
+    },
+    {
+      "type": "markdown",
+      "id": "136f85695c5a2af8",
+      "text": "The same directives on stacked cards: the grip sits before the fold arrow, and INDEX Rank names the heading."
+    },
+    {
+      "type": "table",
+      "id": "74cb783c737e9698",
+      "text": "CAPTION Ranked strands\nLAYOUT stack\nREORDER\nINDEX Rank\nFOLD closed\n| Strand | Time to evidence | Judgement |\n| --- | --- | --- |\n| Agent score | weeks | do first |\n| Musical intention | months | second |\n| Improvisation scores | reading only | alongside |\n"
+    },
+    {
+      "type": "markdown",
+      "id": "6772bc1b60f5437d",
+      "text": "An item whose text has no table yet simply says so \u2014 double-click to add one."
+    },
+    {
+      "type": "table",
+      "id": "2681359a7a525862",
+      "text": ""
+    },
+    {
+      "type": "markdown",
+      "id": "20990cfbbe9f9f78",
+      "text": "# Grid is an alias"
+    },
+    {
+      "type": "markdown",
+      "id": "7fd9d2d57e738e81",
+      "text": "Since 0.7.0 the plain face is **LAYOUT table**. The old word still works: this item says `LAYOUT grid` on purpose and renders as a table, with the plugin's warning under it asking for the new word. Old pages keep working; new pages should say table."
+    },
+    {
+      "type": "table",
+      "id": "4d4b7ca4ebce7453",
+      "text": "CAPTION Written the old way\nLAYOUT grid\n\n| Word | Face |\n|---|---|\n| table | plain table, the new word |\n| grid | the same face, with a warning |\n| stack | row cards |"
+    },
+    {
+      "type": "markdown",
+      "id": "7add5c3c270a0a8f",
+      "text": "# See\n\n- [[About Table Plugin]]\n- [[About Table API Keys]]\n- [[Table API]]\n- [[Six Voices Plan]]\n- [[Old Pis Are Weak Performers]]\n- [[Stub]]"
+    }
+  ],
+  "journal": [
+    {
+      "type": "create",
+      "item": {
+        "title": "Table Plugin Demo",
+        "story": [
+          {
+            "type": "markdown",
+            "id": "f5735840df055b15",
+            "text": "A live demo of the Table Plugin: a narrow CSV table, a wide table as stacked row cards, JSON, a line chart reading the table above it, sorting, FIT, REORDER and INDEX, and the grid alias. Press the enlarge button on any table for the sortable view; double-click to edit."
+          },
+          {
+            "type": "markdown",
+            "id": "40d065f7ab7b20ee",
+            "text": "This page ships inside wiki-plugin-table and is served on every site of a farm that installs it. It was generated through a dialogue between [[David Bovill]] and [[Claude Code]]. See [[About Table Plugin]] for the DSL and [[About Table API Keys]] for the write door."
+          },
+          {
+            "type": "table",
+            "id": "9f309ee104ad281a",
+            "text": "CAPTION Boards on the bench\nBoard,RAM,Good for\nPi 4,4 GB,gadget mode and video\nPi 5,8 GB,the farm and Marvin\nPi Zero 2 W,512 MB,sensors",
+            "resource": {
+              "columns": [
+                "Board",
+                "RAM",
+                "Good for"
+              ],
+              "rows": [
+                [
+                  "Pi 4",
+                  "4 GB",
+                  "pushed as csv"
+                ],
+                [
+                  "Pi 5",
+                  "8 GB",
+                  "the farm and Marvin"
+                ],
+                [
+                  "Pi Zero 2 W",
+                  "512 MB",
+                  "sensors"
+                ]
+              ]
+            },
+            "slug": "table-plugin-demo",
+            "writes": 2,
+            "writer": "laptop-demo",
+            "written": 1786975374219,
+            "interval": 1035
+          },
+          {
+            "type": "markdown",
+            "id": "1fefc3f4aeef1604",
+            "text": "The ranked research strands from [[Six Voices Plan]], six columns wide, stacked because it is wider than three columns."
+          },
+          {
+            "type": "table",
+            "id": "c197dc86ead2e7d4",
+            "text": "CAPTION The ranked research strands\n| # | Strand | Time to evidence | Reversible | Needs | Judgement |\n|---|---|---|---|---|---|\n| 1 | [[Agent Score]] \u2014 a score read by a human, an agent and OSC | weeks: the tabletop tests it directly | yes | the ensemble | do first; it is what the build needs |\n| 2 | [[Musical Intention]] \u2014 minimum representation of an intention | weeks\u2013months | yes | reading + two embassies | second; the rain event is its first test case |\n| 3 | [[Improvisation Score]]s \u2014 event, graphic, text scores, conduction | reading only | yes | a library | run alongside 1 as reading |\n| 4 | [[Laban Notation]] \u2014 effort/flow/weight as gesture primitives | months, uncertain payoff | yes | a dance-literate reader | last; learn from it, do not adopt it |"
+          },
+          {
+            "type": "markdown",
+            "id": "948a5fafbdfc592a",
+            "text": "The same item accepts JSON \u2014 here an object with columns and rows."
+          },
+          {
+            "type": "table",
+            "id": "6e9433dbb78b99a5",
+            "text": "{\n  \"columns\": [\n    \"voice\",\n    \"role\",\n    \"instrument\"\n  ],\n  \"rows\": [\n    [\n      \"Marvin\",\n      \"host\",\n      \"speech\"\n    ],\n    [\n      \"Matt\",\n      \"reader\",\n      \"radio\"\n    ],\n    [\n      \"Laura\",\n      \"scribe\",\n      \"wiki\"\n    ]\n  ]\n}"
+          },
+          {
+            "type": "markdown",
+            "id": "f956d9be1c12120e",
+            "text": "# Data interface\n\nA price table, then a line item under it. The line plugin asks wiki.getData for the nearest data item above it and finds this table \u2014 the same way it would find a [[Data Plugin]] item."
+          },
+          {
+            "type": "table",
+            "id": "9e44ab1f3f399f58",
+            "text": "CAPTION Prices\nDate,Price\n2026-08-10,3.2\n2026-08-11,3.9\n2026-08-12,3.5\n2026-08-13,4.4\n2026-08-14,4.1\n2026-08-15,4.8\n2026-08-16,5.2\n"
+          },
+          {
+            "type": "line",
+            "id": "98964cea0e946dac",
+            "text": "Prices from the table above"
+          },
+          {
+            "type": "markdown",
+            "id": "728583ea30ebfceb",
+            "text": "# More shapes\n\nTab-separated with an initial sort \u2014 the SORT directive orders rows before they render; the \u2922 view lets a reader re-sort by any column."
+          },
+          {
+            "type": "table",
+            "id": "cbd0d56b4cd252d8",
+            "text": "CAPTION Voices by latency\nSORT latency ms\nvoice\tengine\tlatency ms\nMarvin\tPiper\t180\nMatt\tespeak\t40\nLaura\tCoqui\t650\nDeep Thought\tKokoro\t320"
+          },
+          {
+            "type": "markdown",
+            "id": "0d5965c58d81f7eb",
+            "text": "A wide table forced to LAYOUT table scrolls sideways inside the item instead of stacking \u2014 the page never widens."
+          },
+          {
+            "type": "table",
+            "id": "f1174087f3836a94",
+            "text": "LAYOUT table\n| Board | CPU | RAM | OS | Audio out | Good for | Not for |\n|---|---|---|---|---|---|---|\n| Pi 1 B+ | 1\u00d7700 MHz | 512 MB | Bookworm Lite | 3.5 mm jack | a single sound source, OSC receiver | any browser, any speech model |\n| Pi 2 B | 4\u00d7900 MHz | 1 GB | Bookworm Lite | 3.5 mm jack | OSC + a small sampler | speech synthesis in real time |\n| Pi 3 B | 4\u00d71.2 GHz | 1 GB | Bookworm | jack + HDMI | Piper voice at a stretch | Whisper |\n| Pi 4 | 4\u00d71.5 GHz | 4 GB | Bookworm | HDMI, USB | a voice, video gadget | large models |\n| Pi 5 | 4\u00d72.4 GHz | 8 GB | Bookworm | HDMI, USB | the farm, Marvin, Whisper base | GPU work |"
+          },
+          {
+            "type": "markdown",
+            "id": "e90b59dc4b7f9ebf",
+            "text": "The same seven-column table left to stack (auto), with KEY choosing which column heads each card. This is a real page from the Pi lab, [[Old Pis Are Weak Performers]]."
+          },
+          {
+            "type": "table",
+            "id": "8a3e0789ac97db03",
+            "text": "KEY Good for\nCAPTION Old Pis are weak performers\n| Board | CPU | RAM | OS | Audio out | Good for | Not for |\n|---|---|---|---|---|---|---|\n| Pi 1 B+ | 1\u00d7700 MHz | 512 MB | Bookworm Lite | 3.5 mm jack | a single sound source, OSC receiver | any browser, any speech model |\n| Pi 2 B | 4\u00d7900 MHz | 1 GB | Bookworm Lite | 3.5 mm jack | OSC + a small sampler | speech synthesis in real time |\n| Pi 3 B | 4\u00d71.2 GHz | 1 GB | Bookworm | jack + HDMI | Piper voice at a stretch | Whisper |\n| Pi 4 | 4\u00d71.5 GHz | 4 GB | Bookworm | HDMI, USB | a voice, video gadget | large models |\n| Pi 5 | 4\u00d72.4 GHz | 8 GB | Bookworm | HDMI, USB | the farm, Marvin, Whisper base | GPU work |"
+          },
+          {
+            "type": "markdown",
+            "id": "f3c935210f7e7063",
+            "text": "# Reorder and index\n\nA numbered list you can drag. **INDEX** draws the count, **REORDER** grows a \u283f grip on every row for the site owner (readers see numbers only). Drop a row and the item text is rewritten in that order, journaled like any edit, and the numbers follow."
+          },
+          {
+            "type": "table",
+            "id": "c60855aa6c220028",
+            "text": "CAPTION Running order\nLAYOUT table\nREORDER\nINDEX\n| Act | Length | Note |\n| --- | --- | --- |\n| [[Marvin]] opens | 3 min | dry |\n| Station ident | 20 s | the jingle |\n| [[Matt Kuderski]] reads | 8 min | live |\n| Listener letters | 5 min | pre-recorded |\n| Close | 1 min | credits |\n"
+          },
+          {
+            "type": "markdown",
+            "id": "136f85695c5a2af8",
+            "text": "The same directives on stacked cards: the grip sits before the fold arrow, and INDEX Rank names the heading."
+          },
+          {
+            "type": "table",
+            "id": "74cb783c737e9698",
+            "text": "CAPTION Ranked strands\nLAYOUT stack\nREORDER\nINDEX Rank\nFOLD closed\n| Strand | Time to evidence | Judgement |\n| --- | --- | --- |\n| Agent score | weeks | do first |\n| Musical intention | months | second |\n| Improvisation scores | reading only | alongside |\n"
+          },
+          {
+            "type": "markdown",
+            "id": "6772bc1b60f5437d",
+            "text": "An item whose text has no table yet simply says so \u2014 double-click to add one."
+          },
+          {
+            "type": "table",
+            "id": "2681359a7a525862",
+            "text": ""
+          },
+          {
+            "type": "markdown",
+            "id": "20990cfbbe9f9f78",
+            "text": "# Grid is an alias"
+          },
+          {
+            "type": "markdown",
+            "id": "7fd9d2d57e738e81",
+            "text": "Since 0.7.0 the plain face is **LAYOUT table**. The old word still works: this item says `LAYOUT grid` on purpose and renders as a table, with the plugin's warning under it asking for the new word. Old pages keep working; new pages should say table."
+          },
+          {
+            "type": "table",
+            "id": "4d4b7ca4ebce7453",
+            "text": "CAPTION Written the old way\nLAYOUT grid\n\n| Word | Face |\n|---|---|\n| table | plain table, the new word |\n| grid | the same face, with a warning |\n| stack | row cards |"
+          },
+          {
+            "type": "markdown",
+            "id": "7add5c3c270a0a8f",
+            "text": "# See\n\n- [[About Table Plugin]]\n- [[About Table API Keys]]\n- [[Table API]]\n- [[Six Voices Plan]]\n- [[Old Pis Are Weak Performers]]\n- [[Stub]]"
+          }
+        ]
+      },
+      "date": 1788615238579,
+      "provenance": "moved into wiki-plugin-table 0.7.1 from plugin.localhost, 2026-09-05"
+    }
+  ]
+}

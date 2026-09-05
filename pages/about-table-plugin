@@ -4,7 +4,7 @@
     {
       "type": "markdown",
       "id": "48167500a2ce35f9",
-      "text": "The **Table Plugin** puts a real table on a wiki page. Type CSV, TSV, a markdown pipe table or JSON into the item and it renders as a compact table when it is narrow, or as stacked row cards when it is wide, so six columns still read in the panel. The \u2922 button opens the whole table as a sortable table over the page. Double-click the item to edit its text."
+      "text": "The **Table Plugin** puts a real table on a wiki page. Type CSV, TSV, a markdown pipe table or JSON into the item and it renders as a compact table when it is narrow, or as stacked row cards when it is wide, so six columns still read in the panel. The \u2922 button opens the whole table as a sortable table over the page. Double-click the item to edit its text. A live example of everything below is on [[Table Plugin Demo]], which ships with the plugin and opens from the \u2630 menu on any site."
     },
     {
       "type": "table",
@@ -79,7 +79,7 @@
     {
       "type": "markdown",
       "id": "0d404fb4f05be308",
-      "text": "# See\n\n- [[About Table API Keys]]\n- [[About JSON Plugin]]\n- [[About Data Plugin]]\n- [[Farm Plugin]]\n- [[Table API]]"
+      "text": "# See\n\n- [[Table Plugin Demo]] \u2014 every feature live, shipped with the plugin\n- [[About Table API Keys]]\n- [[About JSON Plugin]]\n- [[About Data Plugin]]\n- [[Farm Plugin]]\n- [[Table API]]"
     }
   ],
   "journal": [
@@ -270,6 +270,28 @@
       },
       "date": 1788609886528,
       "provenance": "0.7.0: LAYOUT table, grid is a warned alias"
+    },
+    {
+      "type": "edit",
+      "id": "48167500a2ce35f9",
+      "item": {
+        "type": "markdown",
+        "id": "48167500a2ce35f9",
+        "text": "The **Table Plugin** puts a real table on a wiki page. Type CSV, TSV, a markdown pipe table or JSON into the item and it renders as a compact table when it is narrow, or as stacked row cards when it is wide, so six columns still read in the panel. The \u2922 button opens the whole table as a sortable table over the page. Double-click the item to edit its text. A live example of everything below is on [[Table Plugin Demo]], which ships with the plugin and opens from the \u2630 menu on any site."
+      },
+      "date": 1788615238581,
+      "provenance": "link the shipped demo page"
+    },
+    {
+      "type": "edit",
+      "id": "0d404fb4f05be308",
+      "item": {
+        "type": "markdown",
+        "id": "0d404fb4f05be308",
+        "text": "# See\n\n- [[Table Plugin Demo]] \u2014 every feature live, shipped with the plugin\n- [[About Table API Keys]]\n- [[About JSON Plugin]]\n- [[About Data Plugin]]\n- [[Farm Plugin]]\n- [[Table API]]"
+      },
+      "date": 1788615238581,
+      "provenance": "link the shipped demo page"
     }
   ],
   "plugin": "table"
