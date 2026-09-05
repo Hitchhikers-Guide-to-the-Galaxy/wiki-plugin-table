@@ -69,7 +69,7 @@
     {
       "type": "markdown",
       "id": "f956d9be1c12120e",
-      "text": "# Data interface\n\nA price table, then a line item under it. The line plugin asks wiki.getData for the nearest data item above it and finds this table \u2014 the same way it would find a [[Data Plugin]] item."
+      "text": "# Data interface\n\nA price table, then a line item under it. Ward's [[Line Plugin]] asks wiki.getData for the nearest data item above it and finds this table, the same way it would find a [[Data Plugin]] item. It reads the columns by name, Date and Price, so the table must carry those two headings. The chart is not an editor: the line item's own text is only a label, and double-clicking it does nothing by design. Edit the table above and the chart follows."
     },
     {
       "type": "table",
@@ -331,6 +331,17 @@
       },
       "date": 1788615238579,
       "provenance": "moved into wiki-plugin-table 0.7.1 from plugin.localhost, 2026-09-05"
+    },
+    {
+      "type": "edit",
+      "id": "f956d9be1c12120e",
+      "item": {
+        "type": "markdown",
+        "id": "f956d9be1c12120e",
+        "text": "# Data interface\n\nA price table, then a line item under it. Ward's [[Line Plugin]] asks wiki.getData for the nearest data item above it and finds this table, the same way it would find a [[Data Plugin]] item. It reads the columns by name, Date and Price, so the table must carry those two headings. The chart is not an editor: the line item's own text is only a label, and double-clicking it does nothing by design. Edit the table above and the chart follows."
+      },
+      "date": 1788615672166,
+      "provenance": "explain the line item"
     }
   ]
 }
