@@ -137,15 +137,22 @@ const stackHtml = (table, resolve = null) => {
 // rows (tr or row-card, each stamped data-row = its index in the text) are the
 // targets. mousedown on the grip stops at the item so the wiki's own story
 // sortable never sees it. onMove(from, to) receives text-order indexes.
+// The item element outlives each redraw (emit + bind run again on it), so a
+// second bind replaces the first set of listeners rather than stacking on it:
+// stacked sets each handled the same drop, and the second one undid the move.
 
 const bindReorder = (el, onMove) => {
+  if (el._tableReorder) el._tableReorder.abort()
+  const ac = new AbortController()
+  el._tableReorder = ac
+  const on = (type, fn) => el.addEventListener(type, fn, { signal: ac.signal })
   const rowOf = target => target && target.closest('[data-row]')
   let from = null
   const clear = () => el.querySelectorAll('.drop-before, .drop-after').forEach(r => r.classList.remove('drop-before', 'drop-after'))
-  el.addEventListener('mousedown', e => {
+  on('mousedown', e => {
     if (e.target.closest('.row-grip')) e.stopPropagation()
   })
-  el.addEventListener('dragstart', e => {
+  on('dragstart', e => {
     const row = e.target.closest && e.target.closest('.row-grip') ? rowOf(e.target) : null
     if (!row) return e.preventDefault()
     from = +row.dataset.row
@@ -153,7 +160,7 @@ const bindReorder = (el, onMove) => {
     e.dataTransfer.setData('text/plain', String(from))
     e.dataTransfer.setDragImage(row, 10, 10)
   })
-  el.addEventListener('dragover', e => {
+  on('dragover', e => {
     const row = rowOf(e.target)
     if (from === null || !row) return
     e.preventDefault()
@@ -163,7 +170,7 @@ const bindReorder = (el, onMove) => {
     clear()
     row.classList.add(after ? 'drop-after' : 'drop-before')
   })
-  el.addEventListener('drop', e => {
+  on('drop', e => {
     const row = rowOf(e.target)
     if (from === null || !row) return
     e.preventDefault()
@@ -174,7 +181,7 @@ const bindReorder = (el, onMove) => {
     if (to !== from) onMove(from, to)
     from = null
   })
-  el.addEventListener('dragend', () => {
+  on('dragend', () => {
     clear()
     from = null
   })

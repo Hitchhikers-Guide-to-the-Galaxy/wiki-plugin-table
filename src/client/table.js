@@ -94,7 +94,9 @@ const openOverlay = ($item, item, table) => {
 }
 
 const bind = ($item, item) => {
-  $item.on('dblclick', e => {
+  // the item is redrawn in place after an edit or a drop, so drop the last bind first
+  $item.off('.table')
+  $item.on('dblclick.table', e => {
     if ($(e.target).closest('.table-enlarge, .row-fold, a').length) return
     wiki.textEditor($item, item)
   })
@@ -108,7 +110,7 @@ const bind = ($item, item) => {
     $card.find('> .row-body').css('display', folded ? 'none' : '')
     $card.find('> .row-key > .row-fold').text(folded ? '▸' : '▾').attr('aria-expanded', !folded)
   }
-  $item.on('click', '.row-fold, .row-key', function (e) {
+  $item.on('click.table', '.row-fold, .row-key', function (e) {
     if ($(e.target).closest('a').length) return // a [[link]] in the key cell is a link
     if ($item.find('.table-stack').attr('data-fold') === 'none') return
     e.stopPropagation()
@@ -118,7 +120,7 @@ const bind = ($item, item) => {
     else setFolded($card, folded)
   })
   // column highlight chatter, as the data plugin does
-  $item.on('mouseenter', 'th, dt', function () {
+  $item.on('mouseenter.table', 'th, dt', function () {
     $item.trigger('thumb', $(this).text())
   })
   // REORDER: a drop rewrites the text, journals an edit, redraws the item

@@ -87,11 +87,15 @@ const openOverlay = (el, item, table, context) => {
 }
 
 export function bind(el, item, context) {
+  // the item is redrawn in place after an edit or a drop, so drop the last bind first
+  if (el._tableBind) el._tableBind.abort()
+  const ac = new AbortController()
+  el._tableBind = ac
   el.addEventListener('dblclick', (e) => {
     if (e.target.closest('.table-enlarge, .row-fold, a')) return
     e.stopPropagation()
     context.textEditor(item)
-  })
+  }, { signal: ac.signal })
   el.querySelector('.table-enlarge')?.addEventListener('click', (e) => {
     e.stopPropagation()
     openOverlay(el, item, tableOf(item), context)
@@ -112,7 +116,7 @@ export function bind(el, item, context) {
     const folded = card.dataset.folded !== 'true'
     if (e.shiftKey) el.querySelectorAll('.row-card').forEach((c) => setFolded(c, folded))
     else setFolded(card, folded)
-  })
+  }, { signal: ac.signal })
   // REORDER: a drop saves an edit through the column (context.save) and redraws
   bindReorder(el, (from, to) => {
     const next = { ...item, text: reorderedText(item.text, from, to) }
