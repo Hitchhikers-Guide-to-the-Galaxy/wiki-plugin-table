@@ -37,6 +37,10 @@ table.table-grid tbody tr:hover td { background: #fafafa; }
    still degrades to a scroll rather than breaking the page. */
 table.table-grid.fit-first, table.table-grid.fit-even { width: 100%; min-width: 0; }
 table.table-grid.fit-first td, table.table-grid.fit-even td { max-width: none; min-width: 0; }
+/* A long unbroken string (a URL, a path) would otherwise spill past its cell
+   and bring back the scroll FIT exists to remove: let it break anywhere.
+   The fit-first first column stays nowrap, which overflow-wrap respects. */
+table.table-grid.fit-first td, table.table-grid.fit-even td { overflow-wrap: anywhere; }
 table.table-grid.fit-first th:first-child, table.table-grid.fit-first td:first-child {
   white-space: nowrap; width: 1%;
 }
